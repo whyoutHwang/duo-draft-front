@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { signin } from "../../service/apiService";
 
 function Signin() {
+  const [formData, setFormData] = useState({
+    email: "hij281@gmail.com",
+    password: "123123",
+  });
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 생성합니다
+
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await signin(formData);
+      navigate("/signin"); // 회원 가입 성공 후 로그인 페이지로 이동
+    } catch (error) {
+      console.error("Signup failed:", error.message);
+      // 에러 처리 로직
+    }
+  };
 
   const goToSignup = () => {
     navigate("/signup"); // '/signup' 경로로 이동하는 함수입니다
@@ -31,6 +51,7 @@ function Signin() {
                   id="email-address"
                   name="email"
                   type="email"
+                  onChange={handleChange}
                   autocomplete="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
@@ -45,6 +66,7 @@ function Signin() {
                   id="password"
                   name="password"
                   type="password"
+                  onChange={handleChange}
                   autocomplete="current-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
@@ -72,7 +94,7 @@ function Signin() {
               <div className="flex items-start">
                 <div className="text-sm">
                   <button
-                    onClick={goToSignup} // onClick 이벤트에 함수를 연결합니다
+                    onClick={goToSignup}
                     className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
                   >
                     회원가입
@@ -83,7 +105,7 @@ function Signin() {
 
             <div>
               <button
-                type="submit"
+                onClick={handleSubmit}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 로그인

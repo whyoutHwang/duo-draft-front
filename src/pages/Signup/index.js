@@ -14,11 +14,10 @@ function Signup() {
   };
 
   const handleSubmit = async (event) => {
-    console.log("formData", formData);
-    // event.preventDefault();
+    event.preventDefault();
     try {
       await signup(formData);
-      //   navigate("/signin"); // 회원 가입 성공 후 로그인 페이지로 이동
+      navigate("/signin"); // 회원 가입 성공 후 로그인 페이지로 이동
     } catch (error) {
       console.error("Signup failed:", error.message);
       // 에러 처리 로직

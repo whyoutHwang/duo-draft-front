@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import authStore from "../../stores/AuthStore";
+import { observer } from "mobx-react";
+
 import { signin } from "../../service/apiService";
 
 function Signin() {
   const [formData, setFormData] = useState({
-    email: "hij281@gmail.com",
-    password: "123123",
+    email: "",
+    password: "",
   });
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 생성합니다
 
@@ -16,8 +19,10 @@ function Signin() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await signin(formData);
-      navigate("/signin"); // 회원 가입 성공 후 로그인 페이지로 이동
+      const data = await signin(formData);
+      console.log(data);
+      authStore.setUser(data.user);
+      navigate("/"); // 회원 가입 성공 후 로그인 페이지로 이동
     } catch (error) {
       console.error("Signup failed:", error.message);
       // 에러 처리 로직
@@ -25,7 +30,7 @@ function Signin() {
   };
 
   const goToSignup = () => {
-    navigate("/signup"); // '/signup' 경로로 이동하는 함수입니다
+    navigate("/signup");
   };
 
   return (
@@ -44,7 +49,7 @@ function Signin() {
             <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
-                <label for="email-address" className="sr-only">
+                <label htmlFor="email-address" className="sr-only">
                   이메일 주소
                 </label>
                 <input
@@ -52,14 +57,14 @@ function Signin() {
                   name="email"
                   type="email"
                   onChange={handleChange}
-                  autocomplete="email"
+                  autoComplete="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="이메일 주소"
                 />
               </div>
               <div>
-                <label for="password" className="sr-only">
+                <label htmlFor="password" className="sr-only">
                   비밀번호
                 </label>
                 <input
@@ -67,7 +72,7 @@ function Signin() {
                   name="password"
                   type="password"
                   onChange={handleChange}
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="비밀번호"
@@ -84,7 +89,7 @@ function Signin() {
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
                 <label
-                  for="remember-me"
+                  htmlFor="remember-me"
                   className="ml-2 block text-sm text-gray-900"
                 >
                   기억하기

@@ -14,3 +14,13 @@ export const getStudent = async (teacherId) => {
   const response = await axiosInstance.get("/students?teacherId=" + teacherId);
   return response.data;
 };
+
+export const createStudent = async (param) => {
+  console.log(param);
+  const response = await axiosInstance.post("/students", param);
+  return response.data;
+};
+export const updateStudent = async (id, updateData) => {
+  const response = await axiosInstance.put(`/students/${id}`, updateData);
+  return response.data;
+};

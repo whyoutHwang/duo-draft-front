@@ -28,7 +28,10 @@ export const getPairHistory = async (teacherId) => {
   return response.data;
 };
 
-export const savePairHistory = async () => {
-  const response = await axiosInstance.post(`/pairHistory/`);
-  return response.data;
+export const savePairHistory = async (teacherId, tempPairs) => {
+  const response = await axiosInstance.post(`/pairHistory/`, {
+    teacherId: teacherId,
+    pairs: tempPairs,
+  });
+  return response;
 };

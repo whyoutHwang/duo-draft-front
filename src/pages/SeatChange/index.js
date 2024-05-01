@@ -1,48 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { getPairHistory, getStudent } from "../../service/apiService";
+import {
+  getPairHistory,
+  getStudent,
+  savePairHistory,
+} from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
 function SeatChange() {
-  const mockPairs = [
-    {
-      student1: { id: "1", name: "학생1" },
-      student2: { id: "2", name: "학생2" },
-    },
-    {
-      student1: { id: "3", name: "학생3" },
-      student2: { id: "4", name: "학생4" },
-    },
-    {
-      student1: { id: "5", name: "학생5" },
-      student2: { id: "6", name: "학생6" },
-    },
-    {
-      student1: { id: "7", name: "학생7" },
-      student2: { id: "8", name: "학생8" },
-    },
-    {
-      student1: { id: "9", name: "학생9" },
-      student2: { id: "10", name: "학생10" },
-    },
-    {
-      student1: { id: "11", name: "학생13" },
-      student2: { id: "12", name: "학생9" },
-    },
-    {
-      student1: { id: "13", name: "학생117" },
-      student2: { id: "14", name: "학생3" },
-    },
-    {
-      student1: { id: "15", name: "학생13" },
-      student2: { id: "16", name: "학생9" },
-    },
-    {
-      student1: { id: "17", name: "학생13" },
-      student2: { id: "18", name: "학생9" },
-    },
-  ];
-
-  const [pairs, setPairs] = useState(mockPairs);
-  const [tempPairs, setTempPairs] = useState([...mockPairs]);
+  const [pairs, setPairs] = useState([]);
+  const [tempPairs, setTempPairs] = useState([]);
   const [editMode, setEditMode] = useState(false);
 
   const midpoint = Math.ceil(pairs.length / 2);
@@ -97,16 +62,9 @@ function SeatChange() {
     const confirmSave = window.confirm("저장하시겠습니까?");
     if (confirmSave) {
       try {
-        // API 호출 로직 추가
-        const response = await fetch("/api/savePairs", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(tempPairs),
-        });
-
-        if (response.ok) {
+        const response = await savePairHistory(AuthStore.user._id, tempPairs);
+        console.log(response);
+        if (response.status === 201) {
           setPairs(tempPairs);
           setEditMode(false);
           alert("저장되었습니다.");
@@ -119,6 +77,7 @@ function SeatChange() {
       }
     }
   }
+
   function handleCancel() {
     setTempPairs([...pairs]);
     setEditMode(false);

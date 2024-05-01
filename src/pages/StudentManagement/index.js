@@ -32,8 +32,6 @@ function StudentManagement() {
 
     fetchStudentsData();
   }, []);
-  // 배열을 문자열로 변환하는 함수
-  const arrayToString = (arr) => arr.join(", ") || "없음";
 
   const toggleSidebar = () => {
     if (showSidebar) {

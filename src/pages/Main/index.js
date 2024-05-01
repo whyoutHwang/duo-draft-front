@@ -16,10 +16,6 @@ import {
 } from "react-icons/fa";
 
 function Main() {
-  // useEffect(() => {
-  //   console.log("로그인 상태:", authStore.isLoggedIn);
-  // }, [authStore.isLoggedIn, authStore.user]);
-
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="w-64 bg-white dark:bg-gray-800 shadow-md hidden sm:block">
@@ -42,12 +38,6 @@ function Main() {
               <FaHome className="w-5 h-5" />
               <span className="ml-3">자리 바꾸기</span>
             </a>
-
-            {/* <div className="mt-auto flex items-center justify-center p-4">
-              <FaFacebookF className="text-blue-600 mx-2" />
-              <FaInstagram className="text-pink-500 mx-2" />
-              <FaTwitter className="text-blue-400 mx-2" />
-            </div> */}
           </nav>
         </div>
       </div>

@@ -5,6 +5,8 @@ import {
   updateStudent,
 } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
+import { useAuthRedirect } from "../../hooks/useAuthRedirect";
+import styles from "./StudentManagement.module.css";
 
 function StudentManagement() {
   const [students, setStudents] = useState([]);
@@ -13,18 +15,19 @@ function StudentManagement() {
     gender: "",
     // favoriteFriend: [],
     // foughtFriend: [],
-    teacherId: AuthStore.user._id,
+    teacherId: "",
   });
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  useAuthRedirect();
+
   useEffect(() => {
     const fetchStudentsData = async () => {
       const data = await getStudent(AuthStore.user._id);
       setStudents(data);
-      console.log(data);
     };
 
     fetchStudentsData();
@@ -33,6 +36,12 @@ function StudentManagement() {
   const arrayToString = (arr) => arr.join(", ") || "없음";
 
   const toggleSidebar = () => {
+    if (showSidebar) {
+      setFormData({
+        name: "",
+        gender: "",
+      });
+    }
     setShowSidebar(!showSidebar);
   };
 
@@ -105,8 +114,8 @@ function StudentManagement() {
       {showSidebar && (
         <div
           className={`fixed top-0 right-0 w-96 bg-white p-6 rounded-l-lg shadow-lg transform ${
-            showSidebar ? "translate-x-0" : "translate-x-full"
-          } transition-transform duration-300 ease-in-out overflow-y-auto h-screen`}
+            showSidebar ? styles.sidebarOpen : styles.sidebarClosed
+          } overflow-y-auto h-screen`}
         >
           <div className="flex justify-between items-center">
             <div className="flex-col">
@@ -146,12 +155,6 @@ function StudentManagement() {
         </div>
       )}
 
-      <style jsx>{`
-        .transition-transform {
-          transition: transform 0.3s;
-          transform: ${showSidebar ? "translateX(0)" : "translateX(100%)"};
-        }
-      `}</style>
       <table className="min-w-full table-fixed text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -161,29 +164,29 @@ function StudentManagement() {
             <th scope="col" className="py-3 px-6">
               성별
             </th>
-            <th scope="col" className="py-3 px-6">
+            {/* <th scope="col" className="py-3 px-6">
               좋아하는 친구
             </th>
             <th scope="col" className="py-3 px-6">
               싫어하는 친구
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody>
           {students.map((student) => (
             <tr
-              key={student.id}
+              key={student._id}
               onClick={() => startEditing(student)}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
               <td className="py-4 px-6">{student.name}</td>
               <td className="py-4 px-6">{student.gender}</td>
-              <td className="py-4 px-6">
-                {/* {arrayToString(student.favorite_friends)} */}
+              {/* <td className="py-4 px-6">
+                {arrayToString(student.favorite_friends)}
               </td>
               <td className="py-4 px-6">
-                {/* {arrayToString(student.fought_friends)} */}
-              </td>
+                {arrayToString(student.fought_friends)}
+              </td> */}
             </tr>
           ))}
         </tbody>

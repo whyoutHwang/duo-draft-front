@@ -32,7 +32,7 @@ class AuthStore {
 
   loadFromSessionStorage() {
     const storedData = sessionStorage.getItem("AuthStore");
-    console.log(storedData);
+
     if (storedData) {
       const { isLoggedIn, user } = JSON.parse(storedData);
       console.log(isLoggedIn, user);

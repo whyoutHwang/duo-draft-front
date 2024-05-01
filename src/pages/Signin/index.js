@@ -20,7 +20,6 @@ function Signin() {
     event.preventDefault();
     try {
       const data = await signin(formData);
-      console.log(data);
       authStore.setUser(data.user);
       navigate("/"); // 회원 가입 성공 후 로그인 페이지로 이동
     } catch (error) {

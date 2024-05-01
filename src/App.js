@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Main from "./pages/Main";
@@ -28,6 +30,7 @@ function App() {
           {/* 다른 보호된 라우트들 */}
         </Route>
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }

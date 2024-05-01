@@ -10,17 +10,25 @@ export const signin = async (userData) => {
   return response.data;
 };
 export const getStudent = async (teacherId) => {
-  console.log(teacherId);
   const response = await axiosInstance.get("/students?teacherId=" + teacherId);
   return response.data;
 };
 
 export const createStudent = async (param) => {
-  console.log(param);
   const response = await axiosInstance.post("/students", param);
   return response.data;
 };
 export const updateStudent = async (id, updateData) => {
   const response = await axiosInstance.put(`/students/${id}`, updateData);
+  return response.data;
+};
+
+export const getPairHistory = async (teacherId) => {
+  const response = await axiosInstance.get(`/pairHistory/${teacherId}`);
+  return response.data;
+};
+
+export const savePairHistory = async () => {
+  const response = await axiosInstance.post(`/pairHistory/`);
   return response.data;
 };

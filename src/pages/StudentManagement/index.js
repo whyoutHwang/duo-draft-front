@@ -7,7 +7,6 @@ import {
 import AuthStore from "../../stores/AuthStore";
 import { useAuthRedirect } from "../../hooks/useAuthRedirect";
 import Sidebar from "../../components/Sidebar";
-import StudentTable from "../../components/StudentTable";
 import StudentList from "../../components/StudentList";
 import ToggleButton from "../../components/ToggleButton";
 
@@ -55,12 +54,12 @@ function StudentManagement() {
       name: student.name,
       gender: student.gender,
       teacherId: student.teacher_id,
-      favoriteFriend: student.favoriteFriend,
-      foughtFriend: student.foughtFriend,
+      favoriteFriend: student.favoriteFriend || [],
+      foughtFriend: student.foughtFriend || [],
     });
     setEditingStudentId(student._id);
     setIsEditing(true);
-    toggleSidebar(); // 사이드바를 열어 수정 폼을 보여줍니다.
+    setShowSidebar(true); // 사이드바를 열어 수정 폼을 보여줍니다.
   };
 
   const handleChange = (e) => {
@@ -109,23 +108,29 @@ function StudentManagement() {
   };
 
   return (
-    <div className="flex-col h-screen justify-center items-center ">
-      {/* <button onClick={toggleSidebar}>등록하기</button> */}
-      {showSidebar && (
-        <Sidebar
-          formData={formData}
-          students={students}
-          handleChange={handleChange}
-          handleFormSubmit={handleFormSubmit}
-          toggleSidebar={toggleSidebar}
-          isEditing={isEditing}
-        />
-      )}
+    <div className="flex-col h-screen justify-center items-center">
+      <Sidebar
+        formData={formData}
+        students={students}
+        handleChange={handleChange}
+        handleFormSubmit={handleFormSubmit}
+        toggleSidebar={toggleSidebar}
+        isEditing={isEditing}
+        isOpen={showSidebar}
+      />
       <div className="flex justify-between items-center p-4">
         <h1 className="text-lg font-semibold">나의 친구들을 만나볼까요?</h1>
-        <ToggleButton viewMode={viewMode} setViewMode={setViewMode} />
+        <ToggleButton
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          toggleSidebar={toggleSidebar}
+        />
       </div>
-      <StudentList students={students} viewMode={viewMode} />
+      <StudentList
+        students={students}
+        viewMode={viewMode}
+        onStudentClick={startEditing}
+      />
     </div>
   );
 }

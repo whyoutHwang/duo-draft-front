@@ -1,10 +1,5 @@
-import React from "react";
-
-const GENDER_OPTIONS = [
-  { value: "", label: "성별 선택" },
-  { value: "남", label: "남" },
-  { value: "여", label: "여" },
-];
+import React, { useEffect, useRef } from "react";
+import styles from "./Sidebar.module.css";
 
 const Sidebar = ({
   formData,
@@ -13,48 +8,79 @@ const Sidebar = ({
   handleFormSubmit,
   toggleSidebar,
   isEditing,
-}) => (
-  <div
-    className={`fixed top-0 right-0 w-96 bg-white p-6 rounded-l-lg shadow-lg transform  overflow-y-auto h-screen`}
-  >
-    <div className="flex justify-between items-center">
-      <div className="flex-col">
-        <div className="flex">
+  isOpen,
+}) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+
+      setTimeout(() => {
+        containerRef.current.classList.remove(styles.hidden);
+      }, 300);
+    } else {
+      document.body.style.overflow = "auto";
+      setTimeout(() => {
+        containerRef.current.classList.add(styles.hidden);
+      }, 300); // 사이드바의 transition 시간과 동일하게 맞추기
+    }
+  }, [isOpen]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={styles.sidebarContainer}
+      onClick={toggleSidebar}
+    >
+      <div
+        className={`${styles.sidebar} ${
+          isOpen ? styles.sidebarOpen : styles.sidebarClose
+        }`}
+      >
+        <div className="flex justify-between items-center p-4 border-b">
           <h2 className="font-semibold text-lg">
-            {isEditing ? "학생 정보 수정" : "학생 정보 입력"}
+            {isEditing ? "어떤 새로운 친구가 왔을까요?" : "학생 정보 입력"}
           </h2>
+          <button
+            onClick={toggleSidebar}
+            className="text-gray-600 hover:text-gray-800"
+          >
+            닫기
+          </button>
         </div>
-        <form onSubmit={handleFormSubmit} className="flex-col space-y-4">
-          <div>
-            <label>이름:</label>
+        <form onSubmit={handleFormSubmit} className="p-4">
+          <div className="mb-4">
+            <label className="block mb-2">이름:</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
             />
           </div>
-          <div>
-            <label>성별:</label>
+          <div className="mb-4">
+            <label className="block mb-2">성별:</label>
             <select
               name="gender"
               value={formData.gender}
               onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
             >
-              {GENDER_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
+              <option value="">성별 선택</option>
+              <option value="남">남</option>
+              <option value="여">여</option>
             </select>
           </div>
-          <div>
-            <label>좋아하는 친구:</label>
+          <div className="mb-4">
+            <label className="block mb-2">좋아하는 친구:</label>
             <select
               name="favoriteFriend"
               multiple
               value={formData.favoriteFriend}
               onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
             >
               {students.map((student) => (
                 <option key={student._id} value={student._id}>
@@ -63,13 +89,14 @@ const Sidebar = ({
               ))}
             </select>
           </div>
-          <div>
-            <label>싸운 친구:</label>
+          <div className="mb-4">
+            <label className="block mb-2">싫어하는 친구:</label>
             <select
               name="foughtFriend"
               multiple
               value={formData.foughtFriend}
               onChange={handleChange}
+              className="w-full px-3 py-2 border rounded"
             >
               {students.map((student) => (
                 <option key={student._id} value={student._id}>
@@ -78,16 +105,25 @@ const Sidebar = ({
               ))}
             </select>
           </div>
-          <div className="flex justify-center">
-            <button type="submit">저장</button>
-            <button type="button" className="ml-20" onClick={toggleSidebar}>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              저장
+            </button>
+            <button
+              type="button"
+              className="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded"
+              onClick={toggleSidebar}
+            >
               닫기
             </button>
           </div>
         </form>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Sidebar;

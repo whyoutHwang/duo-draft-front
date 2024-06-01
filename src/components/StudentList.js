@@ -2,7 +2,7 @@ import React from "react";
 import StudentCard from "./StudentCard";
 import StudentListItem from "./StudentListItem";
 
-const StudentList = ({ students, viewMode }) => (
+const StudentList = ({ students, viewMode, onStudentClick }) => (
   <div
     className={`${
       viewMode === "card" ? "grid grid-cols-6 gap-4" : "grid grid-cols-2"
@@ -11,9 +11,17 @@ const StudentList = ({ students, viewMode }) => (
   >
     {students.map((student) =>
       viewMode === "card" ? (
-        <StudentCard key={student._id} student={student} />
+        <StudentCard
+          key={student._id}
+          student={student}
+          onClick={onStudentClick}
+        />
       ) : (
-        <StudentListItem key={student._id} student={student} />
+        <StudentListItem
+          key={student._id}
+          student={student}
+          onClick={onStudentClick}
+        />
       )
     )}
   </div>

@@ -1,13 +1,13 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { FaHome, FaUserFriends } from "react-icons/fa";
+import { FaHome, FaUserFriends, FaCog } from "react-icons/fa";
 
 function Main() {
   const location = useLocation();
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="w-64 bg-[#F2EFE8] shadow-md hidden sm:block">
+      <div className="w-64 bg-[#F2EFE8] shadow-md hidden sm:flex sm:flex-col justify-between">
         <div className="flex flex-col items-center mt-8">
           {/* <img src="logo.png" alt="Duo Draft Logo" className="w-16 h-16 mb-4" /> */}
           <div className="w-full flex justify-start mb-4">
@@ -43,6 +43,19 @@ function Main() {
               <span className="ml-3">자리 바꾸기</span>
             </a>
           </nav>
+        </div>
+        <div className="w-full mb-4">
+          <a
+            className={`h-16 flex items-center p-2 hover:bg-[#397358] hover:text-white rounded-r-full ${
+              location.pathname === "/settings"
+                ? "bg-[#397358] text-white"
+                : "hover:bg-[#397358] hover:text-white"
+            }`}
+            href="/settings"
+          >
+            <FaCog className="w-5 h-5 ml-4" />
+            <span className="ml-3">계정 설정</span>
+          </a>
         </div>
       </div>
 

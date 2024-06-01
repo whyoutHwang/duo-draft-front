@@ -34,23 +34,16 @@ function Signin() {
 
   return (
     <div className="min-h-screen flex">
-      <div className="flex-1 flex items-center justify-center p-10">
-        <div className="max-w-md w-full">
+      <div className="flex-1 flex items-center justify-center ">
+        <div className="max-w-md w-full bg-[#F2EFE8] p-10 rounded-2xl shadow-md">
           <div>
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-              로그인
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Welcome back! Please login to your account.
-            </p>
+            <span className="mt-6 font-extrabold text-gray-900">DUO DRAFT</span>
           </div>
           <form className="mt-8 space-y-6">
             <input type="hidden" name="remember" value="true" />
-            <div className="rounded-md shadow-sm -space-y-px">
-              <div>
-                <label htmlFor="email-address" className="sr-only">
-                  이메일 주소
-                </label>
+            <div className="rounded-md shadow-sm -space-y-px ">
+              <div className="mb-4">
+                <label htmlFor="email-address">이메일 주소</label>
                 <input
                   id="email-address"
                   name="email"
@@ -58,14 +51,13 @@ function Signin() {
                   onChange={handleChange}
                   autoComplete="email"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="mt-2 appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="이메일 주소"
                 />
               </div>
+
               <div>
-                <label htmlFor="password" className="sr-only">
-                  비밀번호
-                </label>
+                <label htmlFor="password">비밀번호</label>
                 <input
                   id="password"
                   name="password"
@@ -73,13 +65,21 @@ function Signin() {
                   onChange={handleChange}
                   autoComplete="current-password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="mt-2 appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="비밀번호"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="mt-6">
+              <button
+                onClick={handleSubmit}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#397358] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                로그인
+              </button>
+            </div>
+            <div className="flex items-center justify-end">
               <div className="flex items-center">
                 <input
                   id="remember-me"
@@ -95,7 +95,7 @@ function Signin() {
                 </label>
               </div>
 
-              <div className="flex items-start">
+              <div className="flex items-start ml-4">
                 <div className="text-sm">
                   <button
                     onClick={goToSignup}
@@ -106,20 +106,8 @@ function Signin() {
                 </div>
               </div>
             </div>
-
-            <div>
-              <button
-                onClick={handleSubmit}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                로그인
-              </button>
-            </div>
           </form>
         </div>
-      </div>
-      <div className="flex-1 bg-gradient-to-r from-purple-500 to-indigo-500 p-10 text-white flex items-center justify-center">
-        <h1 className="text-4xl font-bold">Welcome Back!</h1>
       </div>
     </div>
   );

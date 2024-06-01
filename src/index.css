@@ -27,3 +27,8 @@ code {
 body {
   font-family: "ImcreSoojin", sans-serif;
 }
+
+.hover\:rounded-r-only:hover {
+  border-top-right-radius: 1rem; /* 원하는 값으로 변경 */
+  border-bottom-right-radius: 1rem; /* 원하는 값으로 변경 */
+}

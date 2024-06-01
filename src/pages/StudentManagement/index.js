@@ -13,8 +13,8 @@ function StudentManagement() {
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
-    // favoriteFriend: [],
-    // foughtFriend: [],
+    favoriteFriend: [],
+    foughtFriend: [],
     teacherId: "",
   });
 
@@ -27,6 +27,7 @@ function StudentManagement() {
   useEffect(() => {
     const fetchStudentsData = async () => {
       const data = await getStudent(AuthStore.user._id);
+      setFormData({ ...formData, teacherId: AuthStore.user._id });
       setStudents(data);
     };
 
@@ -49,8 +50,8 @@ function StudentManagement() {
       gender: student.gender,
       teacherId: student.teacher_id,
       id: student._id,
-      // favoriteFriend: student.favoriteFriend,
-      // foughtFriend: student.foughtFriend,
+      favoriteFriend: student.favoriteFriend,
+      foughtFriend: student.foughtFriend,
     });
     setEditingStudentId(student._id);
     setIsEditing(true);
@@ -60,12 +61,16 @@ function StudentManagement() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "favoriteFriend" || name === "foughtFriend") {
-      // 배열 데이터를 처리합니다. 예시에서는 쉼표로 구분된 문자열을 배열로 변환합니다.
-      setFormData({ ...formData, [name]: value.split(",") });
+      // 배열 데이터를 처리합니다. 예시에서는 다중 선택된 옵션의 값을 배열로 변환합니다.
+      const options = e.target.options;
+      const selectedValues = Array.from(options)
+        .filter((option) => option.selected)
+        .map((option) => option.value);
+      setFormData({ ...formData, [name]: selectedValues });
     } else {
-      console.log(name, value);
       setFormData({ ...formData, [name]: value });
     }
+    console.log(formData);
   };
 
   const handleFormSubmit = async (e) => {
@@ -137,13 +142,48 @@ function StudentManagement() {
                     value={formData.gender}
                     onChange={handleChange}
                   >
-                    <option value="">남</option>
+                    <option value="">성별 선택</option>
+                    <option value="남">남</option>
                     <option value="여">여</option>
+                  </select>
+                </div>
+                <div>
+                  <label>좋아하는 친구:</label>
+                  <select
+                    name="favoriteFriend"
+                    multiple
+                    value={formData.favoriteFriend}
+                    onChange={handleChange}
+                  >
+                    {students.map((student) => (
+                      <option key={student._id} value={student._id}>
+                        {student.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label>싸운 친구:</label>
+                  <select
+                    name="foughtFriend"
+                    multiple
+                    value={formData.foughtFriend}
+                    onChange={handleChange}
+                  >
+                    {students.map((student) => (
+                      <option key={student._id} value={student._id}>
+                        {student.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex justify-center">
                   <button type="submit">저장</button>
-                  <button className="ml-20" onClick={toggleSidebar}>
+                  <button
+                    type="button"
+                    className="ml-20"
+                    onClick={toggleSidebar}
+                  >
                     닫기
                   </button>
                 </div>
@@ -162,12 +202,12 @@ function StudentManagement() {
             <th scope="col" className="py-3 px-6">
               성별
             </th>
-            {/* <th scope="col" className="py-3 px-6">
+            <th scope="col" className="py-3 px-6">
               좋아하는 친구
             </th>
             <th scope="col" className="py-3 px-6">
               싫어하는 친구
-            </th> */}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -179,12 +219,8 @@ function StudentManagement() {
             >
               <td className="py-4 px-6">{student.name}</td>
               <td className="py-4 px-6">{student.gender}</td>
-              {/* <td className="py-4 px-6">
-                {arrayToString(student.favorite_friends)}
-              </td>
-              <td className="py-4 px-6">
-                {arrayToString(student.fought_friends)}
-              </td> */}
+              <td className="py-4 px-6"></td>
+              <td className="py-4 px-6"></td>
             </tr>
           ))}
         </tbody>

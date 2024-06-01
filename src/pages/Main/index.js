@@ -1,8 +1,10 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { FaHome, FaUserFriends } from "react-icons/fa";
 
 function Main() {
+  const location = useLocation();
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="w-64 bg-[#F2EFE8] shadow-md hidden sm:block">
@@ -19,14 +21,22 @@ function Main() {
           </div>
           <nav className="w-full">
             <a
-              className="h-16 flex items-center p-2 mb-4 hover:bg-[#397358] hover:text-white rounded-r-full"
-              href="/new-friends"
+              className={`h-16 flex items-center p-2 rounded-r-full ${
+                location.pathname === "/"
+                  ? "bg-[#397358] text-white"
+                  : "hover:bg-[#397358] hover:text-white"
+              }`}
+              href="/"
             >
               <FaUserFriends className="w-5 h-5 ml-4" />
               <span className="ml-3">새로운 친구</span>
             </a>
             <a
-              className="h-16 flex items-center p-2 mb-4 hover:bg-[#397358] hover:text-white rounded-r-full"
+              className={`h-16 flex items-center p-2 rounded-r-full ${
+                location.pathname === "/seat-change"
+                  ? "bg-[#397358] text-white"
+                  : "hover:bg-[#397358] hover:text-white"
+              }`}
               href="/seat-change"
             >
               <FaHome className="w-5 h-5 ml-4" />

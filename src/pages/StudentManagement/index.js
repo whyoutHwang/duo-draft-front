@@ -6,7 +6,10 @@ import {
 } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
 import { useAuthRedirect } from "../../hooks/useAuthRedirect";
-import styles from "./StudentManagement.module.css";
+import Sidebar from "../../components/Sidebar";
+import StudentTable from "../../components/StudentTable";
+import StudentList from "../../components/StudentList";
+import ToggleButton from "../../components/ToggleButton";
 
 function StudentManagement() {
   const [students, setStudents] = useState([]);
@@ -17,10 +20,10 @@ function StudentManagement() {
     foughtFriend: [],
     teacherId: "",
   });
-
   const [showSidebar, setShowSidebar] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [viewMode, setViewMode] = useState("card");
 
   useAuthRedirect();
 
@@ -39,6 +42,9 @@ function StudentManagement() {
       setFormData({
         name: "",
         gender: "",
+        favoriteFriend: [],
+        foughtFriend: [],
+        teacherId: AuthStore.user._id,
       });
     }
     setShowSidebar(!showSidebar);
@@ -49,7 +55,6 @@ function StudentManagement() {
       name: student.name,
       gender: student.gender,
       teacherId: student.teacher_id,
-      id: student._id,
       favoriteFriend: student.favoriteFriend,
       foughtFriend: student.foughtFriend,
     });
@@ -61,7 +66,6 @@ function StudentManagement() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "favoriteFriend" || name === "foughtFriend") {
-      // 배열 데이터를 처리합니다. 예시에서는 다중 선택된 옵션의 값을 배열로 변환합니다.
       const options = e.target.options;
       const selectedValues = Array.from(options)
         .filter((option) => option.selected)
@@ -70,23 +74,16 @@ function StudentManagement() {
     } else {
       setFormData({ ...formData, [name]: value });
     }
-    console.log(formData);
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
-    if (isEditing) {
-      // 업데이트 처리 로직
-      await handleUpdate();
-    } else {
-      // 새 학생 추가 처리 로직
-      await handleCreate();
-    }
+    isEditing ? await handleUpdate() : await handleCreate();
   };
-  const handleCreate = async (e) => {
+
+  const handleCreate = async () => {
     try {
-      const response = await createStudent(formData); // API 호출
+      const response = await createStudent(formData);
       setStudents([...students, response]);
       toggleSidebar();
       alert("학생 정보가 성공적으로 등록되었습니다.");
@@ -95,11 +92,11 @@ function StudentManagement() {
     }
   };
 
-  const handleUpdate = async (e) => {
+  const handleUpdate = async () => {
     try {
-      const response = await updateStudent(editingStudentId, formData); // API 호출
+      const response = await updateStudent(editingStudentId, formData);
       const updatedStudents = students.map((student) =>
-        student.id === editingStudentId ? response : student
+        student._id === editingStudentId ? response : student
       );
       setStudents(updatedStudents);
       setIsEditing(false);
@@ -112,119 +109,23 @@ function StudentManagement() {
   };
 
   return (
-    <div className="flex-col h-screen bg-gray-100 justify-center items-center ">
-      <button onClick={toggleSidebar}>등록하기</button>
+    <div className="flex-col h-screen justify-center items-center ">
+      {/* <button onClick={toggleSidebar}>등록하기</button> */}
       {showSidebar && (
-        <div
-          className={`fixed top-0 right-0 w-96 bg-white p-6 rounded-l-lg shadow-lg transform ${
-            showSidebar ? styles.sidebarOpen : styles.sidebarClosed
-          } overflow-y-auto h-screen`}
-        >
-          <div className="flex justify-between items-center">
-            <div className="flex-col">
-              <div className="flex">
-                <h2 className="font-semibold text-lg">학생 정보 입력</h2>
-              </div>
-              <form onSubmit={handleFormSubmit} className="flex-col space-y-4">
-                <div>
-                  <label>이름:</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label>성별:</label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                  >
-                    <option value="">성별 선택</option>
-                    <option value="남">남</option>
-                    <option value="여">여</option>
-                  </select>
-                </div>
-                <div>
-                  <label>좋아하는 친구:</label>
-                  <select
-                    name="favoriteFriend"
-                    multiple
-                    value={formData.favoriteFriend}
-                    onChange={handleChange}
-                  >
-                    {students.map((student) => (
-                      <option key={student._id} value={student._id}>
-                        {student.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label>싸운 친구:</label>
-                  <select
-                    name="foughtFriend"
-                    multiple
-                    value={formData.foughtFriend}
-                    onChange={handleChange}
-                  >
-                    {students.map((student) => (
-                      <option key={student._id} value={student._id}>
-                        {student.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex justify-center">
-                  <button type="submit">저장</button>
-                  <button
-                    type="button"
-                    className="ml-20"
-                    onClick={toggleSidebar}
-                  >
-                    닫기
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        <Sidebar
+          formData={formData}
+          students={students}
+          handleChange={handleChange}
+          handleFormSubmit={handleFormSubmit}
+          toggleSidebar={toggleSidebar}
+          isEditing={isEditing}
+        />
       )}
-
-      <table className="min-w-full table-fixed text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="py-3 px-6">
-              이름
-            </th>
-            <th scope="col" className="py-3 px-6">
-              성별
-            </th>
-            <th scope="col" className="py-3 px-6">
-              좋아하는 친구
-            </th>
-            <th scope="col" className="py-3 px-6">
-              싫어하는 친구
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => (
-            <tr
-              key={student._id}
-              onClick={() => startEditing(student)}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-            >
-              <td className="py-4 px-6">{student.name}</td>
-              <td className="py-4 px-6">{student.gender}</td>
-              <td className="py-4 px-6"></td>
-              <td className="py-4 px-6"></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="flex justify-between items-center p-4">
+        <h1 className="text-lg font-semibold">나의 친구들을 만나볼까요?</h1>
+        <ToggleButton viewMode={viewMode} setViewMode={setViewMode} />
+      </div>
+      <StudentList students={students} viewMode={viewMode} />
     </div>
   );
 }

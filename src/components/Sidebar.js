@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./Sidebar.module.css";
+import Select from "react-select";
 
 const Sidebar = ({
   formData,
@@ -27,6 +28,27 @@ const Sidebar = ({
     }
   }, [isOpen]);
 
+  const handleSidebarClick = (e) => {
+    e.stopPropagation(); // 이벤트 전파 중단
+  };
+  const handleSelectChange = (selectedOptions, { name }) => {
+    const value = selectedOptions
+      ? selectedOptions.map((option) => option.value)
+      : [];
+    handleChange({ target: { name, value } });
+  };
+
+  const handleContainerClick = (e) => {
+    if (e.target === containerRef.current) {
+      toggleSidebar();
+    }
+  };
+
+  const studentOptions = students.map((student) => ({
+    value: student._id,
+    label: student.name,
+  }));
+
   return (
     <div
       ref={containerRef}
@@ -37,6 +59,7 @@ const Sidebar = ({
         className={`${styles.sidebar} ${
           isOpen ? styles.sidebarOpen : styles.sidebarClose
         }`}
+        onClick={handleSidebarClick}
       >
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="font-semibold text-lg">
@@ -75,35 +98,41 @@ const Sidebar = ({
           </div>
           <div className="mb-4">
             <label className="block mb-2">좋아하는 친구:</label>
-            <select
+            <Select
               name="favoriteFriend"
-              multiple
-              value={formData.favoriteFriend}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-            >
-              {students.map((student) => (
-                <option key={student._id} value={student._id}>
-                  {student.name}
-                </option>
-              ))}
-            </select>
+              isMulti
+              value={
+                formData.favoriteFriend
+                  ? formData.favoriteFriend.map((friendId) =>
+                      studentOptions.find((option) => option.value === friendId)
+                    )
+                  : []
+              }
+              onChange={(selectedOptions, actionMeta) =>
+                handleSelectChange(selectedOptions, actionMeta)
+              }
+              options={studentOptions}
+              className="w-full"
+            />
           </div>
           <div className="mb-4">
             <label className="block mb-2">싫어하는 친구:</label>
-            <select
+            <Select
               name="foughtFriend"
-              multiple
-              value={formData.foughtFriend}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-            >
-              {students.map((student) => (
-                <option key={student._id} value={student._id}>
-                  {student.name}
-                </option>
-              ))}
-            </select>
+              isMulti
+              value={
+                formData.foughtFriend
+                  ? formData.foughtFriend.map((friendId) =>
+                      studentOptions.find((option) => option.value === friendId)
+                    )
+                  : []
+              }
+              onChange={(selectedOptions, actionMeta) =>
+                handleSelectChange(selectedOptions, actionMeta)
+              }
+              options={studentOptions}
+              className="w-full"
+            />
           </div>
           <div className="flex justify-end">
             <button

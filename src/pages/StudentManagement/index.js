@@ -54,8 +54,8 @@ function StudentManagement() {
       name: student.name,
       gender: student.gender,
       teacherId: student.teacher_id,
-      favoriteFriend: student.favoriteFriend || [],
-      foughtFriend: student.foughtFriend || [],
+      favoriteFriend: student.favorite_friend || [],
+      foughtFriend: student.fought_friend || [],
     });
     setEditingStudentId(student._id);
     setIsEditing(true);
@@ -64,15 +64,8 @@ function StudentManagement() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "favoriteFriend" || name === "foughtFriend") {
-      const options = e.target.options;
-      const selectedValues = Array.from(options)
-        .filter((option) => option.selected)
-        .map((option) => option.value);
-      setFormData({ ...formData, [name]: selectedValues });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: value });
+    console.log(formData);
   };
 
   const handleFormSubmit = async (e) => {

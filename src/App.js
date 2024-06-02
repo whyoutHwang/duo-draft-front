@@ -10,6 +10,8 @@ import SeatChange from "./pages/SeatChange";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
+  console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
+
   return (
     <Router>
       <Routes>

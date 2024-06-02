@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3002/api", // 실제 서버 주소로 대체
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   timeout: 10000, // 10초 타임아웃
   headers: {
     "Content-Type": "application/json",

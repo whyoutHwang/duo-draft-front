@@ -18,7 +18,7 @@ const Sidebar = ({
 
       setTimeout(() => {
         containerRef.current.classList.remove(styles.hidden);
-      }, 300);
+      }, 250);
     } else {
       document.body.style.overflow = "auto";
       setTimeout(() => {

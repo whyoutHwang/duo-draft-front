@@ -80,28 +80,24 @@ function Signin() {
               </button>
             </div>
             <div className="flex items-center justify-end">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  기억하기
-                </label>
-              </div>
-
               <div className="flex items-start ml-4">
                 <div className="text-sm">
                   <button
                     onClick={goToSignup}
-                    className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
+                    className="font-medium  hover:text-indigo-500 focus:outline-none"
                   >
                     회원가입
+                  </button>
+                </div>
+              </div>
+              |
+              <div className="flex items-start">
+                <div className="text-sm">
+                  <button
+                    onClick={goToSignup}
+                    className="font-medium hover:text-indigo-500 focus:outline-none"
+                  >
+                    비밀번호 찾기
                   </button>
                 </div>
               </div>

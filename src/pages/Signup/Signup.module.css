@@ -1,0 +1,30 @@
+/* styles.css */
+.customCheckbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-color: #d1d5db; /* 기본 배경색 (회색) */
+  border-radius: 50%; /* 둥근 모양 */
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.customCheckbox:checked {
+  background-color: #397358; /* 체크된 상태 배경색 (녹색) */
+}
+
+.customCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}

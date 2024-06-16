@@ -24,15 +24,15 @@ axiosInstance.interceptors.response.use(
       switch (status) {
         case 404:
           toast.error("데이터를 찾을 수 없습니다.");
-          console.error("데이터를 찾을 수 없습니다.", data.error);
+          console.error("데이터를 찾을 수 없습니다.", data.message);
           break;
         case 500:
           toast.error("서버 오류가 발생했습니다.");
-          console.error("서버 오류가 발생했습니다.", data.error);
+          console.error("서버 오류가 발생했습니다.", data.message);
           break;
         default:
-          toast.error("요청 중 오류가 발생했습니다.");
-          console.error("요청 중 오류가 발생했습니다.", data.error);
+          toast.error(data.message);
+          console.error("요청 중 오류가 발생했습니다.", data.message);
       }
     } else if (error.request) {
       toast.error("응답을 받지 못했습니다.");

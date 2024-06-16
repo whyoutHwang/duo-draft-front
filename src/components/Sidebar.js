@@ -18,12 +18,16 @@ const Sidebar = ({
       document.body.style.overflow = "hidden";
 
       setTimeout(() => {
-        containerRef.current.classList.remove(styles.hidden);
+        if (containerRef.current) {
+          containerRef.current.classList.remove(styles.hidden);
+        }
       }, 250);
     } else {
       document.body.style.overflow = "auto";
       setTimeout(() => {
-        containerRef.current.classList.add(styles.hidden);
+        if (containerRef.current) {
+          containerRef.current.classList.add(styles.hidden);
+        }
       }, 300); // 사이드바의 transition 시간과 동일하게 맞추기
     }
   }, [isOpen]);

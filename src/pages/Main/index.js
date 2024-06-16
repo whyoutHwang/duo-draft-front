@@ -1,9 +1,22 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { FaHome, FaUserFriends, FaCog } from "react-icons/fa";
-
+import authStore from "../../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
 function Main() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await authStore.logout(); // 로그아웃 API 호출 (authStore에 로그아웃 함수가 있다고 가정)
+      authStore.setUser(null); // 사용자 정보를 null로 설정
+      navigate("/signin", { replace: true }); // 로그인 페이지로 이동
+    } catch (error) {
+      console.error("Logout failed:", error.message);
+      // 에러 처리 로직 추가
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -45,6 +58,17 @@ function Main() {
           </nav>
         </div>
         <div className="w-full mb-4">
+          <a
+            className={`w-full h-16 flex items-center p-2 hover:bg-[#397358] hover:text-white rounded-r-full ${
+              location.pathname === "/logout"
+                ? "bg-[#397358] text-white"
+                : "hover:bg-[#397358] hover:text-white"
+            }`}
+            onClick={handleLogout}
+          >
+            <FaCog className="w-5 h-5 ml-4" />
+            <span className="ml-3">로그아웃</span>
+          </a>
           <a
             className={`h-16 flex items-center p-2 hover:bg-[#397358] hover:text-white rounded-r-full ${
               location.pathname === "/settings"

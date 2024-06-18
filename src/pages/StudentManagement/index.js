@@ -3,6 +3,7 @@ import {
   getStudent,
   createStudent,
   updateStudent,
+  uploadStudentProfileImage,
 } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
 import { useAuthRedirect } from "../../hooks/useAuthRedirect";
@@ -18,7 +19,10 @@ function StudentManagement() {
     favoriteFriend: [],
     foughtFriend: [],
     teacherId: "",
+    imageUrl: "",
+    height: "",
   });
+  const [imageFile, setImageFile] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,7 +33,10 @@ function StudentManagement() {
   useEffect(() => {
     const fetchStudentsData = async () => {
       const data = await getStudent(AuthStore.user._id);
-      setFormData({ ...formData, teacherId: AuthStore.user._id });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        teacherId: AuthStore.user._id,
+      }));
       setStudents(data);
     };
 
@@ -44,7 +51,10 @@ function StudentManagement() {
         favoriteFriend: [],
         foughtFriend: [],
         teacherId: AuthStore.user._id,
+        imageUrl: "",
+        height: "",
       });
+      setImageFile(null);
     }
     setShowSidebar(!showSidebar);
   };
@@ -56,27 +66,58 @@ function StudentManagement() {
       teacherId: student.teacher_id,
       favoriteFriend: student.favorite_friend || [],
       foughtFriend: student.fought_friend || [],
+      imageUrl: student.imageUrl || "",
+      height: student.height || "",
     });
+    setImageFile(null);
     setEditingStudentId(student._id);
     setIsEditing(true);
-    setShowSidebar(true); // 사이드바를 열어 수정 폼을 보여줍니다.
+    setShowSidebar(true);
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    console.log(formData);
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setImageFile(files[0]);
+    } else {
+      setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+    }
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    isEditing ? await handleUpdate() : await handleCreate();
+    let updatedFormData = { ...formData };
+
+    if (imageFile) {
+      try {
+        const imageData = await uploadStudentProfileImage(imageFile);
+        console.log("Image uploaded:", imageData);
+
+        updatedFormData = {
+          ...updatedFormData,
+          imageUrl: imageData.location,
+        };
+
+        setFormData(updatedFormData); // 상태 업데이트
+      } catch (error) {
+        alert("이미지 업로드에 실패했습니다.");
+        return;
+      }
+    } else {
+      console.log("No image file to upload.");
+    }
+
+    if (isEditing) {
+      await handleUpdate(updatedFormData);
+    } else {
+      await handleCreate(updatedFormData);
+    }
   };
 
-  const handleCreate = async () => {
+  const handleCreate = async (data) => {
     try {
-      const response = await createStudent(formData);
-      setStudents([...students, response]);
+      const response = await createStudent(data);
+      setStudents((prevStudents) => [...prevStudents, response]);
       toggleSidebar();
       alert("학생 정보가 성공적으로 등록되었습니다.");
     } catch (error) {
@@ -84,9 +125,9 @@ function StudentManagement() {
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (data) => {
     try {
-      const response = await updateStudent(editingStudentId, formData);
+      const response = await updateStudent(editingStudentId, data);
       const updatedStudents = students.map((student) =>
         student._id === editingStudentId ? response : student
       );

@@ -18,7 +18,21 @@ export const createStudent = async (param) => {
   const response = await axiosInstance.post("/students", param);
   return response.data;
 };
+export const uploadStudentProfileImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await axiosInstance.post("/students/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  console.log(response.data);
+  return response.data;
+};
+
 export const updateStudent = async (id, updateData) => {
+  console.log(updateData);
   const response = await axiosInstance.put(`/students/${id}`, updateData);
   return response.data;
 };

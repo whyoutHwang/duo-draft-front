@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Sidebar.module.css";
 import Select from "react-select";
 
@@ -12,6 +12,8 @@ const Sidebar = ({
   isOpen,
 }) => {
   const containerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [heightError, setHeightError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -32,9 +34,12 @@ const Sidebar = ({
     }
   }, [isOpen]);
 
+  const [imagePreview, setImagePreview] = useState(formData.imageUrl || "");
+
   const handleSidebarClick = (e) => {
     e.stopPropagation(); // 이벤트 전파 중단
   };
+
   const handleSelectChange = (selectedOptions, { name }) => {
     const value = selectedOptions
       ? selectedOptions.map((option) => option.value)
@@ -42,9 +47,35 @@ const Sidebar = ({
     handleChange({ target: { name, value } });
   };
 
-  const handleContainerClick = (e) => {
-    if (e.target === containerRef.current) {
-      toggleSidebar();
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        handleChange({ target: { name: "image", files: [file] } }); // 파일 업로드를 부모 컴포넌트로 전달
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleHeightChange = (e) => {
+    const { name, value } = e.target;
+    const numValue = parseInt(value, 10);
+
+    if (!isNaN(numValue)) {
+      if (numValue >= 100 && numValue <= 200) {
+        setHeightError("");
+        handleChange({ target: { name, value: numValue } });
+      } else {
+        setHeightError("키는 100에서 200 사이의 숫자여야 합니다.");
+      }
+    } else {
+      handleChange({ target: { name, value: "" } });
     }
   };
 
@@ -78,7 +109,34 @@ const Sidebar = ({
         </div>
         <form onSubmit={handleFormSubmit} className="p-4">
           <div className="mb-4">
-            <label className="block mb-2">이름:</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+              ref={fileInputRef}
+            />
+            <div className="mt-2 flex row">
+              <div onClick={handleImageClick} className="cursor-pointer">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="프로필 미리보기"
+                    className="w-24 h-24 object-cover rounded-full mx-auto"
+                  />
+                ) : (
+                  <div className="rounded-full w-24 h-24 bg-gray-400"></div>
+                )}
+              </div>
+              <div className="flex flex-col ml-4 self-center items-left">
+                <span>{formData.name}</span>
+                <span>10년 4월 22일</span>
+                <span>{formData.gender} | 12세</span>
+              </div>
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">이름:</label>
             <input
               type="text"
               name="name"
@@ -88,7 +146,7 @@ const Sidebar = ({
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2">성별:</label>
+            <label className="block mb-1">성별:</label>
             <select
               name="gender"
               value={formData.gender}
@@ -101,7 +159,10 @@ const Sidebar = ({
             </select>
           </div>
           <div className="mb-4">
-            <label className="block mb-2">좋아하는 친구:</label>
+            <label className="block">좋아하는 친구</label>
+            <p className="text-xs mb-2">
+              좋아하는 친구란? 짝꿍과 더 가까이 앉을 수 있어요.
+            </p>
             <Select
               name="favoriteFriend"
               isMulti
@@ -120,7 +181,10 @@ const Sidebar = ({
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2">싫어하는 친구:</label>
+            <label className="block">싫어하는 친구</label>
+            <p className="text-xs mb-2">
+              싫어하는 친구란? 짝꿍과 조금 거리를 둘 수 있어요.
+            </p>
             <Select
               name="foughtFriend"
               isMulti
@@ -137,6 +201,25 @@ const Sidebar = ({
               options={studentOptions}
               className="w-full"
             />
+          </div>
+          <div className="mb-4">
+            <label className="block">키</label>
+            <p className="text-xs mb-2">
+              키를 입력해 놓으면 자리 배치에 더 신경 쓸 수 있어요.
+            </p>
+            <div className="relative">
+              <input
+                type="number"
+                name="height"
+                value={formData.height}
+                onChange={handleHeightChange}
+                className="w-full px-3 py-2 border rounded"
+              />
+              <span className="absolute right-3 top-2 text-gray-500">cm</span>
+            </div>
+            {heightError && (
+              <p className="text-red-500 text-xs mt-1">{heightError}</p>
+            )}
           </div>
           <div className="flex justify-end">
             <button

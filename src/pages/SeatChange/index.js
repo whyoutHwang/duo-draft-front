@@ -19,9 +19,21 @@ function SeatChange() {
       try {
         const teacherId = AuthStore.user._id;
         const response = await getPairHistory(teacherId);
-        const pairHistory = response.data;
+        const pairHistory = response;
         setPairs(pairHistory.pairs);
         setTempPairs(pairHistory.pairs);
+
+        const students = await getStudent(teacherId);
+        const initialPairs = [];
+
+        for (let i = 0; i < students.length; i += 2) {
+          const student1 = students[i];
+          const student2 = students[i + 1] || null;
+          initialPairs.push({ student1, student2 });
+        }
+
+        setPairs(initialPairs);
+        setTempPairs(initialPairs);
       } catch (error) {
         console.error("Failed to fetch pair history:", error);
         if (error.response && error.response.status === 404) {

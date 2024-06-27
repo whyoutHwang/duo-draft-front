@@ -125,7 +125,12 @@ const Sidebar = ({
                     className="w-24 h-24 object-cover rounded-full mx-auto"
                   />
                 ) : (
-                  <div className="rounded-full w-24 h-24 bg-gray-400"></div>
+                  <img
+                    src={formData.imageUrl}
+                    alt="프로필 미리보기"
+                    className="w-24 h-24 object-cover rounded-full mx-auto"
+                  />
+                  // <div className="rounded-full w-24 h-24 bg-gray-400"></div>
                 )}
               </div>
               <div className="flex flex-col ml-4 self-center items-left">

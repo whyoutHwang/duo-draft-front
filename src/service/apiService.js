@@ -27,19 +27,17 @@ export const uploadStudentProfileImage = async (file) => {
       "Content-Type": "multipart/form-data",
     },
   });
-  console.log(response.data);
   return response.data;
 };
 
 export const updateStudent = async (id, updateData) => {
-  console.log(updateData);
   const response = await axiosInstance.put(`/students/${id}`, updateData);
   return response.data;
 };
 
 export const getPairHistory = async (teacherId) => {
   const response = await axiosInstance.get(`/pairHistory/${teacherId}`);
-  return response.data;
+  return response;
 };
 
 export const savePairHistory = async (teacherId, tempPairs) => {

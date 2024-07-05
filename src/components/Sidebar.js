@@ -207,7 +207,7 @@ const Sidebar = ({
               className="w-full"
             />
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block">키</label>
             <p className="text-xs mb-2">
               키를 입력해 놓으면 자리 배치에 더 신경 쓸 수 있어요.
@@ -225,7 +225,7 @@ const Sidebar = ({
             {heightError && (
               <p className="text-red-500 text-xs mt-1">{heightError}</p>
             )}
-          </div>
+          </div> */}
           <div className="flex justify-end">
             <button
               type="submit"

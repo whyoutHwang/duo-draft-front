@@ -5,10 +5,12 @@ import {
   savePairHistory,
 } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
+
 function SeatChange() {
   const [pairs, setPairs] = useState([]);
   const [tempPairs, setTempPairs] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [previousPairsMap, setPreviousPairsMap] = useState(new Map());
 
   const midpoint = Math.ceil(pairs.length / 2);
   const section1Pairs = pairs.slice(0, midpoint);
@@ -19,21 +21,11 @@ function SeatChange() {
       try {
         const teacherId = AuthStore.user._id;
         const response = await getPairHistory(teacherId);
-        const pairHistory = response;
-        setPairs(pairHistory.pairs);
-        setTempPairs(pairHistory.pairs);
-
-        const students = await getStudent(teacherId);
-        const initialPairs = [];
-
-        for (let i = 0; i < students.length; i += 2) {
-          const student1 = students[i];
-          const student2 = students[i + 1] || null;
-          initialPairs.push({ student1, student2 });
-        }
-
-        setPairs(initialPairs);
-        setTempPairs(initialPairs);
+        const { pairs, previousPairsMap } = response.data;
+        console.log(pairs);
+        setPairs(pairs);
+        setTempPairs(pairs);
+        setPreviousPairsMap(new Map(Object.entries(previousPairsMap)));
       } catch (error) {
         console.error("Failed to fetch pair history:", error);
         if (error.response && error.response.status === 404) {
@@ -47,7 +39,7 @@ function SeatChange() {
             const student2 = students[i + 1] || null;
             initialPairs.push({ student1, student2 });
           }
-
+          console.log(initialPairs);
           setPairs(initialPairs);
           setTempPairs(initialPairs);
         } else {
@@ -60,16 +52,90 @@ function SeatChange() {
   }, []);
 
   function shufflePairs() {
-    const shuffled = [...pairs];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    setTempPairs(shuffled);
-    setEditMode(true);
-    setPairs(shuffled);
-  }
+    // 1. 모든 학생을 하나의 배열로 만듭니다.
+    let allStudents = pairs
+      .flatMap((pair) => [pair.student1, pair.student2])
+      .filter(Boolean);
 
+    // 2. 학생들을 섞습니다.
+    for (let i = allStudents.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allStudents[i], allStudents[j]] = [allStudents[j], allStudents[i]];
+    }
+
+    // 3. 새로운 짝을 만듭니다.
+    const newPairs = [];
+    const unmatchedStudents = [];
+
+    while (allStudents.length > 0) {
+      const student1 = allStudents.pop();
+      let bestMatch = null;
+      let bestScore = -Infinity;
+
+      for (let i = 0; i < allStudents.length; i++) {
+        const student2 = allStudents[i];
+        let score = 0;
+
+        // 이전 짝꿍 체크
+        const student1PreviousPairs = previousPairsMap.get(student1._id) || [];
+        if (student1PreviousPairs.includes(student2._id)) {
+          score -= 1000; // 이전 짝꿍이면 매우 낮은 점수
+        }
+
+        // 친한 친구 체크
+        if (
+          student1.favorite_friend?.includes(student2._id) ||
+          student2.favorite_friend?.includes(student1._id)
+        ) {
+          score += 10;
+        }
+
+        // 싸운 친구 체크
+        if (
+          student1.fought_friend?.includes(student2._id) ||
+          student2.fought_friend?.includes(student1._id)
+        ) {
+          score -= 5;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = student2;
+        }
+      }
+
+      if (bestMatch) {
+        newPairs.push({ student1, student2: bestMatch });
+        allStudents = allStudents.filter((s) => s._id !== bestMatch._id);
+      } else {
+        unmatchedStudents.push(student1);
+      }
+    }
+
+    // 4. 남은 학생들 처리
+    while (unmatchedStudents.length > 1) {
+      newPairs.push({
+        student1: unmatchedStudents.pop(),
+        student2: unmatchedStudents.pop(),
+      });
+    }
+
+    if (unmatchedStudents.length === 1) {
+      newPairs.push({ student1: unmatchedStudents[0], student2: null });
+    }
+
+    console.log(
+      "New pairs:",
+      newPairs.map((pair) => ({
+        student1: pair.student1.name,
+        student2: pair.student2 ? pair.student2.name : null,
+      }))
+    );
+
+    setTempPairs(newPairs);
+    setEditMode(true);
+    setPairs(newPairs);
+  }
   async function handleSave() {
     const confirmSave = window.confirm("저장하시겠습니까?");
     if (confirmSave) {

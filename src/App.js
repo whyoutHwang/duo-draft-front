@@ -10,6 +10,7 @@ import SeatHistory from "./pages/SeatHistory";
 import Setting from "./pages/Setting";
 import SeatChange from "./pages/SeatChange";
 import ProtectedRoute from "./ProtectedRoute";
+import ProtectedStudentRoute from "./ProtectedStudentRoute";
 
 function App() {
   console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
@@ -29,8 +30,22 @@ function App() {
         >
           <Route index element={<StudentManagement />} />
           <Route path="/student-management" element={<StudentManagement />} />
-          <Route path="/seat-change" element={<SeatChange />} />
-          <Route path="/seat-history" element={<SeatHistory />} />
+          <Route
+            path="/seat-change"
+            element={
+              <ProtectedStudentRoute>
+                <SeatChange />
+              </ProtectedStudentRoute>
+            }
+          />
+          <Route
+            path="/seat-history"
+            element={
+              <ProtectedStudentRoute>
+                <SeatHistory />
+              </ProtectedStudentRoute>
+            }
+          />
           <Route path="/setting" element={<Setting />} />
         </Route>
       </Routes>

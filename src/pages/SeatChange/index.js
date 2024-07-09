@@ -190,7 +190,7 @@ function SeatChange() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto bg-white p-16">
       <h1 className="text-2xl font-bold text-left mb-6">학생 자리 배치</h1>
       <div className="flex justify-end">
         {!editMode ? (

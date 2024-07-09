@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
 import {
-  getStudent,
   createStudent,
   updateStudent,
   uploadStudentProfileImage,
 } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
+import { useStudents } from "../../hooks/useStudents";
 import { useAuthRedirect } from "../../hooks/useAuthRedirect";
 import Sidebar from "../../components/Sidebar";
 import StudentList from "../../components/StudentList";
 import ToggleButton from "../../components/ToggleButton";
 
 function StudentManagement() {
-  const [students, setStudents] = useState([]);
+  const { students, hasStudents, isLoading, refreshStudents } = useStudents();
+
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
     favoriteFriend: [],
     foughtFriend: [],
-    teacherId: "",
+    teacherId: AuthStore.user._id,
     imageUrl: "",
     height: "",
   });
@@ -29,19 +31,6 @@ function StudentManagement() {
   const [viewMode, setViewMode] = useState("card");
 
   useAuthRedirect();
-
-  useEffect(() => {
-    const fetchStudentsData = async () => {
-      const data = await getStudent(AuthStore.user._id);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        teacherId: AuthStore.user._id,
-      }));
-      setStudents(data);
-    };
-
-    fetchStudentsData();
-  }, []);
 
   const toggleSidebar = () => {
     if (showSidebar) {
@@ -97,7 +86,6 @@ function StudentManagement() {
           ...updatedFormData,
           imageUrl: imageData.location,
         };
-
         setFormData(updatedFormData); // 상태 업데이트
       } catch (error) {
         alert("이미지 업로드에 실패했습니다.");
@@ -116,8 +104,8 @@ function StudentManagement() {
 
   const handleCreate = async (data) => {
     try {
-      const response = await createStudent(data);
-      setStudents((prevStudents) => [...prevStudents, response]);
+      await createStudent(data);
+      refreshStudents();
       toggleSidebar();
       alert("학생 정보가 성공적으로 등록되었습니다.");
     } catch (error) {
@@ -127,11 +115,8 @@ function StudentManagement() {
 
   const handleUpdate = async (data) => {
     try {
-      const response = await updateStudent(editingStudentId, data);
-      const updatedStudents = students.map((student) =>
-        student._id === editingStudentId ? response : student
-      );
-      setStudents(updatedStudents);
+      await updateStudent(editingStudentId, data);
+      refreshStudents();
       setIsEditing(false);
       setEditingStudentId(null);
       toggleSidebar();
@@ -203,8 +188,12 @@ function StudentManagement() {
     </div>
   );
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="flex-col h-screen justify-center items-center">
+    <div className="flex-col h-screen justify-center items-center bg-white p-16">
       <Sidebar
         formData={formData}
         students={students}
@@ -214,7 +203,7 @@ function StudentManagement() {
         isEditing={isEditing}
         isOpen={showSidebar}
       />
-      {students.length === 0 ? (
+      {!hasStudents ? (
         renderNoStudentsView()
       ) : (
         <>
@@ -237,4 +226,4 @@ function StudentManagement() {
   );
 }
 
-export default StudentManagement;
+export default observer(StudentManagement);

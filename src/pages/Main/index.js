@@ -65,7 +65,6 @@ function Main() {
 
   UserInfo.propTypes = {
     handleClick: PropTypes.func.isRequired,
-    handleLogout: PropTypes.func.isRequired,
   };
 
   const handleClick = () => {

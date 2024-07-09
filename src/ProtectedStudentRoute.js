@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ProtectedStudentRoute = observer(({ children }) => {
-  if (!StudentStore.hasStudents) {
-    toast.error("학생을 먼저 등록해주세요!");
-    return <Navigate to="/student-management" replace />;
-  }
+  // if (!StudentStore.hasStudents) {
+  //   toast.error("학생을 먼저 등록해주세요!");
+  //   return <Navigate to="/student-management" replace />;
+  // }
 
   return children;
 });

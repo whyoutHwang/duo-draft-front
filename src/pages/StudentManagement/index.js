@@ -20,7 +20,7 @@ function StudentManagement() {
     gender: "",
     favoriteFriend: [],
     foughtFriend: [],
-    teacherId: AuthStore.user._id,
+    teacherId: "",
     imageUrl: "",
     height: "",
   });

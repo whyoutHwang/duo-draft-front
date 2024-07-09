@@ -22,7 +22,7 @@ function SeatChange() {
         const teacherId = AuthStore.user._id;
         const response = await getPairHistory(teacherId);
         const { pairs, previousPairsMap } = response.data;
-        console.log(pairs);
+
         setPairs(pairs);
         setTempPairs(pairs);
         setPreviousPairsMap(new Map(Object.entries(previousPairsMap)));

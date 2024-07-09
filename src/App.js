@@ -6,6 +6,8 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Main from "./pages/Main";
 import StudentManagement from "./pages/StudentManagement";
+import SeatHistory from "./pages/SeatHistory";
+import Setting from "./pages/Setting";
 import SeatChange from "./pages/SeatChange";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -25,11 +27,11 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* Main page and nested routes */}
           <Route index element={<StudentManagement />} />
           <Route path="/student-management" element={<StudentManagement />} />
           <Route path="/seat-change" element={<SeatChange />} />
-          {/* 다른 보호된 라우트들 */}
+          <Route path="/seat-history" element={<SeatHistory />} />
+          <Route path="/setting" element={<Setting />} />
         </Route>
       </Routes>
       <ToastContainer />

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import authStore from "../../stores/AuthStore";
+
 import { useNavigate } from "react-router-dom";
 import Teacher from "../../assets/image/character/Teacher_1.png";
 import LOGO from "../../assets/image/logo/logo.svg";
@@ -37,9 +37,9 @@ function Main() {
     currentPath: PropTypes.string.isRequired,
   };
 
-  const UserInfo = ({ handleClick, handleLogout }) => (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center cursor-pointer" onClick={handleClick}>
+  const UserInfo = ({ handleClick }) => (
+    <div className="flex items-center justify-between" onClick={handleClick}>
+      <div className="flex items-center cursor-pointer">
         <img
           src={Teacher}
           alt="Profile"
@@ -53,11 +53,7 @@ function Main() {
           <p className="text-sm">3학년 2반</p>
         </div>
       </div>
-      <button
-        onClick={handleLogout}
-        className="text-gray-500 hover:text-[#397358]"
-        title="로그아웃"
-      >
+      <button className="text-gray-500 hover:text-[#397358]" title="설정">
         <img className="w-5 h-5 ml-4" src={iconLogout} alt="logout button" />
       </button>
     </div>
@@ -70,17 +66,6 @@ function Main() {
 
   const handleClick = () => {
     navigate("/setting");
-  };
-
-  const handleLogout = async () => {
-    try {
-      await authStore.logout(); // 로그아웃 API 호출 (authStore에 로그아웃 함수가 있다고 가정)
-      authStore.setUser(null); // 사용자 정보를 null로 설정
-      navigate("/signin", { replace: true }); // 로그인 페이지로 이동
-    } catch (error) {
-      console.error("Logout failed:", error.message);
-      // 에러 처리 로직 추가
-    }
   };
 
   return (
@@ -108,7 +93,7 @@ function Main() {
             <span className="ml-3">듀오 드래프트란?</span>
           </a>
           <div className="h-1 border-t border-gray-200 mb-4"></div>
-          <UserInfo handleClick={handleClick} handleLogout={handleLogout} />
+          <UserInfo handleClick={handleClick} />
         </div>
       </div>
       <div className="flex-1 flex flex-col bg-[#F2EFE8]">

@@ -14,7 +14,7 @@ function Main() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const NavItem = ({ path, icon, label, currentPath }) => (
+  const NavItem = ({ path, icon, iconActive, label, currentPath }) => (
     <>
       <a
         className={`h-16 flex items-center p-2 rounded-r-full ${
@@ -24,7 +24,11 @@ function Main() {
         }`}
         href={path}
       >
-        <img className="w-5 h-5 ml-4" src={icon} alt={`${label} icon`} />
+        <img
+          className="w-5 h-5 ml-4"
+          src={currentPath === path ? iconActive : icon}
+          alt={`${label} icon`}
+        />
         <span className="ml-3">{label}</span>
       </a>
     </>

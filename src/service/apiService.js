@@ -47,3 +47,39 @@ export const savePairHistory = async (teacherId, tempPairs) => {
   });
   return response;
 };
+
+export const uploadProfileImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await axiosInstance.post("/user/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const updateTeacher = async (id, updateData) => {
+  let formData;
+  if (updateData instanceof FormData) {
+    formData = updateData;
+  } else {
+    formData = new FormData();
+    for (const key in updateData) {
+      formData.append(key, updateData[key]);
+    }
+  }
+
+  const response = await axiosInstance.put(`/user/teacher/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const getTeacherInfo = async (teacherId) => {
+  const response = await axiosInstance.get(`/user/teacher/${teacherId}`);
+  return response.data;
+};

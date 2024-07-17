@@ -63,22 +63,6 @@ const Sidebar = ({
     fileInputRef.current.click();
   };
 
-  const handleHeightChange = (e) => {
-    const { name, value } = e.target;
-    const numValue = parseInt(value, 10);
-
-    if (!isNaN(numValue)) {
-      if (numValue >= 100 && numValue <= 200) {
-        setHeightError("");
-        handleChange({ target: { name, value: numValue } });
-      } else {
-        setHeightError("키는 100에서 200 사이의 숫자여야 합니다.");
-      }
-    } else {
-      handleChange({ target: { name, value: "" } });
-    }
-  };
-
   const studentOptions = students.map((student) => ({
     value: student._id,
     label: student.name,
@@ -130,7 +114,6 @@ const Sidebar = ({
                     alt="프로필 미리보기"
                     className="w-24 h-24 object-cover rounded-full mx-auto"
                   />
-                  // <div className="rounded-full w-24 h-24 bg-gray-400"></div>
                 )}
               </div>
               <div className="flex flex-col ml-4 self-center items-left">

@@ -22,7 +22,7 @@ function StudentManagement() {
     foughtFriend: [],
     teacherId: "",
     imageUrl: "",
-    height: "",
+    birthDate: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -41,7 +41,7 @@ function StudentManagement() {
         foughtFriend: [],
         teacherId: AuthStore.user._id,
         imageUrl: "",
-        height: "",
+        birthDate: "",
       });
       setImageFile(null);
     }
@@ -56,7 +56,7 @@ function StudentManagement() {
       favoriteFriend: student.favorite_friend || [],
       foughtFriend: student.fought_friend || [],
       imageUrl: student.imageUrl || "",
-      height: student.height || "",
+      birthDate: student.birthDate || "",
     });
     setImageFile(null);
     setEditingStudentId(student._id);
@@ -64,13 +64,22 @@ function StudentManagement() {
     setShowSidebar(true);
   };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
-      setImageFile(files[0]);
+  const handleChange = (e, name = null) => {
+    if (e instanceof Date) {
+      console.log(e);
+      setFormData((prevFormData) => ({ ...prevFormData, birthDate: e }));
     } else {
-      setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+      const { name: inputName, value, files } = e.target;
+      if (inputName === "image") {
+        setImageFile(files[0]);
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [inputName]: value,
+        }));
+      }
     }
+    console.log(formData);
   };
 
   const handleFormSubmit = async (e) => {

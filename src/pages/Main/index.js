@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import authStore from "../../stores/AuthStore";
 import { Outlet, useLocation } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
-import Teacher from "../../assets/image/character/Teacher_1.png";
 import LOGO from "../../assets/image/logo/logo.svg";
 import iconAboutUs from "../../assets/image/icons/icon-about-us.svg";
 import { NAV_ITEMS } from "../../constants/constants";
@@ -13,6 +14,12 @@ import iconLogout from "../../assets/image/icons/icon-logout.svg";
 function Main() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [teacherInfo, setTeacherInfo] = useState(authStore.teacherInfo);
+
+  useEffect(() => {
+    // authStore의 teacherInfo가 변경될 때마다 로컬 상태 업데이트
+    setTeacherInfo(authStore.teacherInfo);
+  }, [authStore.teacherInfo]);
 
   const NavItem = ({ path, icon, iconActive, label, currentPath }) => (
     <>
@@ -41,27 +48,27 @@ function Main() {
     currentPath: PropTypes.string.isRequired,
   };
 
-  const UserInfo = ({ handleClick }) => (
+  const UserInfo = observer(({ handleClick }) => (
     <div className="flex items-center justify-between" onClick={handleClick}>
       <div className="flex items-center cursor-pointer">
         <img
-          src={Teacher}
+          src={teacherInfo.imageUrl}
           alt="Profile"
           className="w-12 h-12 object-cover rounded-full border-2 border-gray-300"
         />
         <div className="ml-4">
           <div>
-            <span style={{ color: "#397358" }}>황인준 </span>
-            <span>선생님</span>
+            <span style={{ color: "#397358" }}>{teacherInfo.name}</span>
+            <span> 선생님</span>
           </div>
-          <p className="text-sm">3학년 2반</p>
+          <p className="text-sm">{teacherInfo.classInfo}</p>
         </div>
       </div>
       <button className="text-gray-500 hover:text-[#397358]" title="설정">
         <img className="w-5 h-5 ml-4" src={iconLogout} alt="logout button" />
       </button>
     </div>
-  );
+  ));
 
   UserInfo.propTypes = {
     handleClick: PropTypes.func.isRequired,
@@ -111,4 +118,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default observer(Main);

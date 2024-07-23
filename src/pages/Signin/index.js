@@ -66,6 +66,8 @@ function Signin() {
     try {
       const data = await signin(formData);
       authStore.setUser(data.user);
+      authStore.setTeacherInfo(data.user._id);
+
       navigate("/"); // 회원 가입 성공 후 로그인 페이지로 이동
     } catch (error) {
       console.error("Signup failed:", error.message);

@@ -2,14 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaUserCircle, FaCog } from "react-icons/fa";
 import authStore from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
-import {
-  getTeacherInfo,
-  updateTeacher,
-  uploadProfileImage,
-} from "../../service/apiService";
+import { updateTeacher, uploadProfileImage } from "../../service/apiService";
 import TeacherImage from "../../assets/image/character/Teacher_1.png";
 import EditIcon from "../../assets/image/icons/icon-edit.svg";
-import AuthStore from "../../stores/AuthStore";
 // 프로필 컴포넌트
 const ProfilePanel = ({
   onSave,
@@ -131,34 +126,12 @@ function Setting() {
   const activeStyle = "bg-[#397358] text-white";
   const inactiveStyle = "bg-[#FDFAF5] hover:bg-[#E9E5DD]";
 
-  // 임시 사용자 데이터
-  const user = {
-    name: "황인준",
-    classInfo: "3학년 2반",
-    imageUrl: "https://example.com/profile.jpg", // 실제 이미지 URL로 교체 필요
-  };
-
   useEffect(() => {
-    // 컴포넌트 마운트 시 교사 정보 가져오기
-    const fetchTeacherInfo = async () => {
-      try {
-        const teacherId = AuthStore.user._id;
-        const teacherInfo = await getTeacherInfo(teacherId);
-        console.log(teacherInfo.classInfo);
-        setFormData({
-          name: teacherInfo.username,
-          imageUrl:
-            teacherInfo.imageUrl === undefined
-              ? TeacherImage
-              : teacherInfo.imageUrl,
-          classInfo:
-            teacherInfo.classInfo === undefined ? "" : teacherInfo.classInfo,
-        });
-      } catch (error) {
-        console.error("교사 정보 가져오기 실패:", error);
-      }
-    };
-    fetchTeacherInfo();
+    setFormData({
+      name: authStore.teacherInfo.name || "",
+      imageUrl: authStore.teacherInfo.imageUrl || TeacherImage,
+      classInfo: authStore.teacherInfo.classInfo || "",
+    });
   }, []);
 
   const handleFormSubmit = async (e) => {
@@ -168,8 +141,6 @@ function Setting() {
     if (imageFile) {
       try {
         const imageData = await uploadProfileImage(imageFile);
-        console.log("Image uploaded:", imageData);
-
         updatedFormData = {
           ...updatedFormData,
           imageUrl: imageData.location,
@@ -182,7 +153,9 @@ function Setting() {
     }
 
     try {
-      await updateTeacher(AuthStore.user._id, updatedFormData);
+      await updateTeacher(authStore.user._id, updatedFormData);
+      authStore.setTeacherInfo(authStore.user._id);
+
       alert("프로필 정보가 성공적으로 업데이트되었습니다.");
     } catch (error) {
       alert("프로필 정보 업데이트에 실패했습니다: " + error.message);

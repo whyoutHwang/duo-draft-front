@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import styles from "./Sidebar.module.css";
 import Select from "react-select";
+import EditIcon from "../assets/image/icons/icon-edit.svg";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Sidebar = ({
   formData,
@@ -13,7 +16,6 @@ const Sidebar = ({
 }) => {
   const containerRef = useRef(null);
   const fileInputRef = useRef(null);
-  const [heightError, setHeightError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
@@ -68,6 +70,26 @@ const Sidebar = ({
     label: student.name,
   }));
 
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return "";
+    const today = new Date();
+    const birthDateObj = new Date(birthDate);
+    let age = today.getFullYear() - birthDateObj.getFullYear();
+    const monthDiff = today.getMonth() - birthDateObj.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
+    ) {
+      age--;
+    }
+    return age + "세";
+  };
+
+  const age = useMemo(
+    () => calculateAge(formData.birthDate),
+    [formData.birthDate]
+  );
+
   return (
     <div
       ref={containerRef}
@@ -92,60 +114,95 @@ const Sidebar = ({
           </button>
         </div>
         <form onSubmit={handleFormSubmit} className="p-4">
-          <div className="mb-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-              ref={fileInputRef}
-            />
-            <div className="mt-2 flex row">
-              <div onClick={handleImageClick} className="cursor-pointer">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="프로필 미리보기"
-                    className="w-24 h-24 object-cover rounded-full mx-auto"
-                  />
-                ) : (
-                  <img
-                    src={formData.imageUrl}
-                    alt="프로필 미리보기"
-                    className="w-24 h-24 object-cover rounded-full mx-auto"
-                  />
-                )}
+          <div className="flex mb-4">
+            <div className="mr-4">
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  ref={fileInputRef}
+                />
+                <div
+                  onClick={handleImageClick}
+                  className="flex cursor-pointer relative"
+                >
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="프로필"
+                      className="w-24 h-24 object-cover rounded-full border border-[#e9e9e9]"
+                    />
+                  ) : (
+                    <img
+                      src={formData.imageUrl}
+                      alt="프로필미리보기"
+                      className="w-24 h-24 object-cover rounded-full border border-[#e9e9e9]"
+                    />
+                  )}
+                  <div className="absolute bottom-0 right-0 bg-[#397358] rounded-full p-1 cursor-pointer">
+                    <img className="w-4 h-4" src={EditIcon} alt="editIcon" />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col ml-4 self-center items-left">
-                <span>{formData.name}</span>
-                <span>10년 4월 22일</span>
-                <span>{formData.gender} | 12세</span>
+            </div>
+
+            <div className="flex flex-col">
+              <div className="flex space-x-4">
+                <div className="flex-1 mb-4">
+                  <label className="block mb-1">이름</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+                <div className="flex-1 mb-4">
+                  <label className="block mb-1">성별:</label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded"
+                  >
+                    <option value="">성별 선택</option>
+                    <option value="남">남</option>
+                    <option value="여">여</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex space-x-4">
+                <div className="flex-1 mb-4">
+                  <label className="block mb-1">생년월일</label>
+                  <DatePicker
+                    name="birthDate"
+                    selected={formData.birthDate}
+                    onChange={(date) => handleChange(date)}
+                    dateFormat="yyyy/MM/dd"
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    placeholderText="생년월일을 선택하세요"
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                </div>
+                <div className="flex-1 mb-4">
+                  <label className="block mb-1">나이</label>
+                  <input
+                    type="text"
+                    value={age}
+                    readOnly
+                    className="w-full px-3 py-2 border rounded bg-gray-100"
+                    placeholder="생년월일 선택 시 자동 계산됩니다"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          <div className="mb-4">
-            <label className="block mb-1">이름:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">성별:</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded"
-            >
-              <option value="">성별 선택</option>
-              <option value="남">남</option>
-              <option value="여">여</option>
-            </select>
-          </div>
+
           <div className="mb-4">
             <label className="block">좋아하는 친구</label>
             <p className="text-xs mb-2">
@@ -190,38 +247,20 @@ const Sidebar = ({
               className="w-full"
             />
           </div>
-          {/* <div className="mb-4">
-            <label className="block">키</label>
-            <p className="text-xs mb-2">
-              키를 입력해 놓으면 자리 배치에 더 신경 쓸 수 있어요.
-            </p>
-            <div className="relative">
-              <input
-                type="number"
-                name="height"
-                value={formData.height}
-                onChange={handleHeightChange}
-                className="w-full px-3 py-2 border rounded"
-              />
-              <span className="absolute right-3 top-2 text-gray-500">cm</span>
-            </div>
-            {heightError && (
-              <p className="text-red-500 text-xs mt-1">{heightError}</p>
-            )}
-          </div> */}
+
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="bg-[#397358] text-white px-4 py-2 rounded mr-2"
             >
-              저장
+              저장하기
             </button>
             <button
               type="button"
-              className="ml-2 px-4 py-2 bg-gray-300 text-gray-700 rounded"
+              className="bg-gray-300 text-white px-4 py-2 rounded"
               onClick={toggleSidebar}
             >
-              닫기
+              취소하기
             </button>
           </div>
         </form>

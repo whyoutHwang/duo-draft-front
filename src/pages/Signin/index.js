@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import authStore from "../../stores/AuthStore";
-import { observer } from "mobx-react";
 
 import { signin } from "../../service/apiService";
 

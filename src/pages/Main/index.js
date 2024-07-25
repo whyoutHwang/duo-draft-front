@@ -87,7 +87,7 @@ function Main() {
             <h1 className="ml-4 text-xl font-bold">Duo Draft</h1>
           </div>
 
-          <nav className="w-full mt-24">
+          <nav className="w-full mt-6">
             {NAV_ITEMS.map((item) => (
               <NavItem
                 key={item.path}

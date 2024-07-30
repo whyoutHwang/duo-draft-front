@@ -13,6 +13,12 @@ export const NAV_ITEMS = [
     label: "새로운 친구",
   },
   {
+    path: "/excel-upload",
+    icon: iconAddPeople,
+    iconActive: iconAddPeopleActive,
+    label: "한번에 친구 등록하기",
+  },
+  {
     path: "/seat-change",
     icon: iconChangeSeat,
     iconActive: iconChangeSeatActive,
@@ -23,5 +29,11 @@ export const NAV_ITEMS = [
     icon: iconHistory,
     iconActive: iconHistoryActive,
     label: "자리 히스토리",
+  },
+  {
+    path: "/board",
+    icon: iconHistory,
+    iconActive: iconHistoryActive,
+    label: "게시판",
   },
 ];

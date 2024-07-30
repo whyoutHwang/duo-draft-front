@@ -18,6 +18,16 @@ export const createStudent = async (param) => {
   const response = await axiosInstance.post("/students", param);
   return response.data;
 };
+
+export const createStudentsBatch = async (studentsData, teacherId) => {
+  const response = await axiosInstance.post("/students/batch", {
+    students: studentsData,
+    teacherId: teacherId,
+  });
+
+  return response.data;
+};
+
 export const uploadStudentProfileImage = async (file) => {
   const formData = new FormData();
   formData.append("image", file);

@@ -11,6 +11,8 @@ import Setting from "./pages/Setting";
 import SeatChange from "./pages/SeatChange";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedStudentRoute from "./ProtectedStudentRoute";
+import ExcelUpload from "./pages/ExcelUpload";
+import Board from "./pages/Board";
 
 function App() {
   console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
@@ -29,6 +31,7 @@ function App() {
           }
         >
           <Route index element={<StudentManagement />} />
+          <Route path="/excel-upload" element={<ExcelUpload />} />
           <Route path="/student-management" element={<StudentManagement />} />
           <Route
             path="/seat-change"
@@ -46,6 +49,7 @@ function App() {
               </ProtectedStudentRoute>
             }
           />
+          <Route path="/board" element={<Board />} />
           <Route path="/setting" element={<Setting />} />
         </Route>
       </Routes>

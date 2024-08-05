@@ -1,12 +1,13 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { getTeacherInfo } from "../service/apiService";
 import TeacherImage from "../assets/image/character/Teacher_1.png";
+
 class AuthStore {
   user = null;
   isLoggedIn = false;
   teacherInfo = {
     name: "",
-    imageUrl: "",
+    imageUrl: TeacherImage,
     classInfo: "",
   };
 
@@ -26,7 +27,7 @@ class AuthStore {
     this.isLoggedIn = false;
     this.teacherInfo = {
       name: "",
-      imageUrl: "",
+      imageUrl: TeacherImage,
       classInfo: "",
     };
     this.saveToSessionStorage();
@@ -37,18 +38,21 @@ class AuthStore {
       const teacherInfo = await getTeacherInfo(teacherId);
       runInAction(() => {
         this.teacherInfo = {
-          name: teacherInfo.name,
-          imageUrl:
-            teacherInfo.imageUrl === undefined
-              ? TeacherImage
-              : teacherInfo.imageUrl,
-          classInfo:
-            teacherInfo.classInfo === undefined ? "" : teacherInfo.classInfo,
+          name: teacherInfo.name || "",
+          imageUrl: teacherInfo.imageUrl || TeacherImage,
+          classInfo: teacherInfo.classInfo || "",
         };
         this.saveToSessionStorage();
       });
     } catch (error) {
       console.error("Error fetching teacher info:", error);
+      runInAction(() => {
+        this.teacherInfo = {
+          name: "",
+          imageUrl: TeacherImage,
+          classInfo: "",
+        };
+      });
     }
   }
 
@@ -72,7 +76,7 @@ class AuthStore {
       this.user = user;
       this.teacherInfo = teacherInfo || {
         name: "",
-        imageUrl: "",
+        imageUrl: TeacherImage,
         classInfo: "",
       };
     }

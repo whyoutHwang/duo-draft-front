@@ -13,6 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ProtectedStudentRoute from "./ProtectedStudentRoute";
 import ExcelUpload from "./pages/ExcelUpload";
 import Board from "./pages/Board";
+import CreatePost from "./pages/CreatePost";
 
 function App() {
   console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
@@ -50,6 +51,7 @@ function App() {
             }
           />
           <Route path="/board" element={<Board />} />
+          <Route path="/create-post" element={<CreatePost />} />
           <Route path="/setting" element={<Setting />} />
         </Route>
       </Routes>

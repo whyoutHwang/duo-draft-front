@@ -19,15 +19,22 @@ function Board() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchPosts = useCallback(async (tab, search) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalPosts, setTotalPosts] = useState(0);
+
+  const fetchPosts = useCallback(async (tab, search, page) => {
     setIsLoading(true);
     try {
       const postType =
         tab === "전체"
           ? undefined
           : Object.keys(postTypeMap).find((key) => postTypeMap[key] === tab);
-      const fetchedPosts = await getPosts(postType, search, 1, 10);
-      setPosts(fetchedPosts);
+      const fetchedPosts = await getPosts(postType, search, page, 10);
+      setPosts(fetchedPosts.posts);
+      setCurrentPage(fetchedPosts.currentPage);
+      setTotalPages(fetchedPosts.totalPages);
+      setTotalPosts(fetchedPosts.totalPosts);
     } catch (err) {
       console.error("게시글을 불러오는 중 오류가 발생했습니다:", err);
       setError("게시글을 불러오는 데 실패했습니다. 다시 시도해 주세요.");
@@ -38,14 +45,30 @@ function Board() {
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      fetchPosts(activeTab, searchTerm);
+      fetchPosts(activeTab, searchTerm, 1);
     }, 300); // 300ms 후에 검색 실행
 
     return () => clearTimeout(debounceTimer);
   }, [activeTab, searchTerm, fetchPosts]);
 
-  // if (isLoading) return <div>로딩 중...</div>;
-  // if (error) return <div>Error: {error}</div>;
+  const handlePageChange = (newPage) => {
+    fetchPosts(activeTab, searchTerm, newPage);
+  };
+
+  const handlePostClick = (postId) => {
+    navigate(`/post/${postId}`); // 게시글 상세 페이지로 이동
+  };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
 
   const filteredPosts =
     activeTab === "전체"
@@ -59,14 +82,13 @@ function Board() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">자유 게시판</h1>
             <button
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="bg-[#397358] text-white px-4 py-2 rounded hover:bg-green-700"
               onClick={() => navigate("/create-post")}
             >
               작성하기
             </button>
           </div>
 
-          {/* 탭 메뉴 */}
           <div className="flex justify-center mb-6">
             {tabs.map((tab, index) => (
               <button
@@ -77,7 +99,7 @@ function Board() {
                ${index === tabs.length - 1 ? "rounded-r-full" : ""}
                ${
                  activeTab === tab
-                   ? "bg-green-600 text-white"
+                   ? "bg-[#397358] text-white"
                    : "bg-gray-200 text-gray-700"
                }
                ${index !== tabs.length - 1 ? "border-r border-white" : ""}
@@ -91,7 +113,7 @@ function Board() {
             ))}
           </div>
 
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-center mb-4">
             <div>{"전체"}</div>
             <div>
               <input
@@ -105,38 +127,47 @@ function Board() {
           </div>
           <table className="w-full">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-2">게시글 타입</th>
-                <th className="text-left py-2">제목</th>
-                <th className="text-left py-2">작성자</th>
-                <th className="text-right py-2">게시 날짜</th>
+              <tr className="border-y-2 border-black">
+                <th className="text-center py-2">게시글 타입</th>
+                <th className="text-center py-2">제목</th>
+                <th className="text-center py-2">작성자</th>
+                <th className="text-center py-2">게시 날짜</th>
               </tr>
             </thead>
             <tbody>
               {filteredPosts.map((post) => (
-                <tr key={post.id} className="border-b">
-                  <td className="py-3">
+                <tr
+                  key={post.id}
+                  className="border-b"
+                  onClick={() => handlePostClick(post._id)}
+                >
+                  <td className="text-center py-3">
                     <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
                       {postTypeMap[post.postType]}
                     </span>
                   </td>
-                  <td className="py-3">{post.title}</td>
-                  <td className="py-3">{post.title}</td>
-                  <td className="text-right py-3 text-gray-500">
-                    {post.createdAt}
+                  <td className="text-center py-3">{post.title}</td>
+                  <td className="text-center py-3">{post.username}</td>
+                  <td className="text-center py-3 text-gray-500">
+                    {formatDate(post.createdAt)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {/* 페이지네이션 */}
           <div className="flex justify-center mt-6">
-            <button className="mx-1 px-3 py-1 rounded border">1</button>
-            <button className="mx-1 px-3 py-1 rounded border">2</button>
-            <button className="mx-1 px-3 py-1 rounded border">3</button>
-            <span className="mx-1">...</span>
-            <button className="mx-1 px-3 py-1 rounded border">24</button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`mx-1 px-3 py-1 rounded border ${
+                  currentPage === page ? "bg-[#397358] text-white" : ""
+                }`}
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </button>
+            ))}
           </div>
         </div>
       </div>

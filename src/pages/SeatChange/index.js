@@ -8,13 +8,16 @@ import AuthStore from "../../stores/AuthStore";
 import useAnimation from "../../hooks/useAnimation";
 import AnimationCanvas from "./AnimationCanvas";
 import StudentSeat from "../../components/StudentSeat";
+import SeatTypeModal from "../../components/SeatTypeModal";
 
 function SeatChange() {
   const [pairs, setPairs] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [isSeatTypeModalOpen, setIsSeatTypeModalOpen] = useState(false);
   const [previousPairsMap, setPreviousPairsMap] = useState(new Map());
   const { showAnimation, setShowAnimation, canvasRef, startAnimation } =
     useAnimation();
+  const [seatType, setSeatType] = useState("A");
 
   useEffect(() => {
     fetchPairHistory();
@@ -64,7 +67,6 @@ function SeatChange() {
     const newPairs = createPairsFromShuffledStudents(shuffledStudents);
 
     setPairs(newPairs);
-    setEditMode(true);
   };
 
   const shuffleArray = (array) => {
@@ -108,37 +110,232 @@ function SeatChange() {
     setEditMode(false);
   };
 
+  const handleEditMode = () => {
+    setEditMode(true);
+  };
+  const handleSeatType = () => {
+    setIsSeatTypeModalOpen(true);
+  };
+
+  const handleSaveSeatType = (newSeatType) => {
+    setSeatType(newSeatType);
+    // Here you would implement the logic to rearrange the seats based on the new type
+  };
+
   const handleShufflePairs = () => {
     startAnimation();
-    setTimeout(shufflePairs, 1000);
+    setTimeout(shufflePairs, 3000);
   };
 
   const renderPairs = () => {
-    const midpoint = Math.ceil(pairs.length / 2);
-    const section1Pairs = pairs.slice(0, midpoint);
-    const section2Pairs = pairs.slice(midpoint);
+    switch (seatType) {
+      case "A":
+        return renderTwoColumns();
+      case "B":
+        return renderThreeColumns();
+      case "C":
+        return render121Layout();
+      case "D":
+        return renderUShape();
+      default:
+        return renderTwoColumns(); // Default to 2 columns
+    }
+  };
 
+  const renderTwoColumns = () => {
+    const midpoint = Math.ceil(pairs.length / 2);
     return (
-      <div className="flex justify-between border rounded border-gray-100 p-4 bg-[#FDFAF5] mt-6">
-        <Section pairs={section1Pairs} title="1분단" />
-        <Section pairs={section2Pairs} title="2분단" />
+      <div className="flex justify-around" style={{ gap: "4rem" }}>
+        <Section pairs={pairs.slice(0, midpoint)} title="1분단" />
+        <Section pairs={pairs.slice(midpoint)} title="2분단" />
       </div>
     );
+  };
+
+  const renderThreeColumns = () => {
+    const columnSize = Math.ceil(pairs.length / 3);
+    return (
+      <div className="flex justify-between " style={{ gap: "4rem" }}>
+        <Section pairs={pairs.slice(0, columnSize)} title="1분단" />
+        <Section
+          pairs={pairs.slice(columnSize, columnSize * 2)}
+          title="2분단"
+        />
+        <Section pairs={pairs.slice(columnSize * 2)} title="3분단" />
+      </div>
+    );
+  };
+
+  const render121Layout = () => {
+    const totalStudents = pairs.reduce(
+      (count, pair) =>
+        count + (pair.student1 ? 1 : 0) + (pair.student2 ? 1 : 0),
+      0
+    );
+    const rowCount = Math.ceil(totalStudents / 4);
+
+    const leftColumn = [];
+    const centerColumn = [];
+    const rightColumn = [];
+
+    let studentIndex = 0;
+    for (let i = 0; i < rowCount; i++) {
+      if (studentIndex < totalStudents) {
+        leftColumn.push({
+          student1: getStudentAt(studentIndex),
+          student2: null,
+        });
+        studentIndex++;
+      }
+
+      if (studentIndex < totalStudents - 1) {
+        centerColumn.push({
+          student1: getStudentAt(studentIndex),
+          student2: getStudentAt(studentIndex + 1),
+        });
+        studentIndex += 2;
+      } else if (studentIndex < totalStudents) {
+        centerColumn.push({
+          student1: getStudentAt(studentIndex),
+          student2: null,
+        });
+        studentIndex++;
+      }
+
+      if (studentIndex < totalStudents) {
+        rightColumn.push({
+          student1: getStudentAt(studentIndex),
+          student2: null,
+        });
+        studentIndex++;
+      }
+    }
+
+    return (
+      <div className="flex justify-between">
+        <Section pairs={leftColumn} title="1분단" size="s" />
+        <Section pairs={centerColumn} title="2분단" size="s" />
+        <Section pairs={rightColumn} title="3분단" size="s" />
+      </div>
+    );
+  };
+
+  // const getStudentAt = (index) => {
+  //   let count = 0;
+  //   for (const pair of pairs) {
+  //     if (count === index) return pair.student1;
+  //     count++;
+  //     if (pair.student2) {
+  //       if (count === index) return pair.student2;
+  //       count++;
+  //     }
+  //   }
+  //   return null;
+  // };
+
+  const renderUShape = () => {
+    const totalStudents = pairs.reduce(
+      (count, pair) =>
+        count + (pair.student1 ? 1 : 0) + (pair.student2 ? 1 : 0),
+      0
+    );
+
+    const sideCount = Math.floor(totalStudents / 4);
+    const bottomCount = totalStudents - sideCount * 2;
+    const bottomRowCount = Math.ceil(bottomCount / 2);
+
+    const leftColumn = [];
+    const rightColumn = [];
+    const bottomRows = [[], []];
+
+    let studentIndex = 0;
+
+    // 왼쪽 열 채우기
+    for (let i = 0; i < sideCount; i++) {
+      leftColumn.push({ student1: getStudentAt(studentIndex), student2: null });
+      studentIndex++;
+    }
+
+    // 오른쪽 열 채우기
+    for (let i = 0; i < sideCount; i++) {
+      rightColumn.push({
+        student1: getStudentAt(studentIndex),
+        student2: null,
+      });
+      studentIndex++;
+    }
+
+    // 하단 두 줄 채우기
+    for (let i = 0; i < bottomCount; i++) {
+      const rowIndex = i < bottomRowCount ? 0 : 1;
+      bottomRows[rowIndex].push({
+        student1: getStudentAt(studentIndex),
+        student2: null,
+      });
+      studentIndex++;
+    }
+
+    return (
+      <div className="flex flex-col items-center">
+        <div className="flex justify-between w-full mb-8">
+          <Section pairs={leftColumn} title="왼쪽" className="w-1/4" size="s" />
+          <Section
+            pairs={rightColumn}
+            title="오른쪽"
+            className="w-1/4"
+            size="s"
+          />
+        </div>
+        <div className="w-full">
+          <Section
+            size="s"
+            pairs={bottomRows[0]}
+            title="하단 (상단 줄)"
+            className="w-full mb-4"
+          />
+          <Section
+            size="s"
+            pairs={bottomRows[1]}
+            title="하단 (하단 줄)"
+            className="w-full"
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const getStudentAt = (index) => {
+    let count = 0;
+    for (const pair of pairs) {
+      if (count === index) return pair.student1;
+      count++;
+      if (pair.student2) {
+        if (count === index) return pair.student2;
+        count++;
+      }
+    }
+    return null;
   };
 
   return (
     <div className="container mx-auto bg-white p-16">
       <h1 className="text-2xl font-bold text-left mb-6">학생 자리 배치</h1>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-12">
         {!editMode ? (
           <button
-            onClick={handleShufflePairs}
+            onClick={handleEditMode}
             className="bg-[#397358] text-white px-4 py-2 rounded"
           >
             자리 바꾸기
           </button>
         ) : (
           <>
+            <button
+              onClick={handleSeatType}
+              className="bg-[#397358] text-white px-4 py-2 rounded mr-2"
+            >
+              자리 타입 설정
+            </button>
             <button
               onClick={handleShufflePairs}
               className="bg-[#397358] text-white px-4 py-2 rounded mr-2"
@@ -168,20 +365,35 @@ function SeatChange() {
           canvasRef={canvasRef}
         />
       )}
+      <SeatTypeModal
+        isOpen={isSeatTypeModalOpen}
+        onClose={() => setIsSeatTypeModalOpen(false)}
+        onSave={handleSaveSeatType}
+      />
     </div>
   );
 }
 
-function Section({ pairs, title }) {
+function Section({ pairs, title, className = "", size = "m" }) {
+  console.log(size);
+
   return (
-    <div className="w-1/2">
+    <div className={`${className}`}>
       <h2 className="text-center font-bold mb-4">{title}</h2>
-      {pairs.map((pair, index) => (
-        <div key={index} className="flex justify-center mb-12">
-          <StudentSeat student={pair.student1} />
-          {pair.student2 && <StudentSeat student={pair.student2} />}
-        </div>
-      ))}
+      <div
+        className={
+          title.includes("하단") ? "flex flex-wrap justify-center" : ""
+        }
+      >
+        {pairs.map((pair, index) => (
+          <div key={index} className="flex mb-4 justify-center">
+            <StudentSeat student={pair.student1} size={size} />
+            {pair.student2 && (
+              <StudentSeat student={pair.student2} size={size} />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

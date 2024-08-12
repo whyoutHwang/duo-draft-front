@@ -72,15 +72,15 @@ function AnimationCanvas({ showAnimation, setShowAnimation, canvasRef }) {
       }
 
       function createImages() {
-        const numberOfImages = 50;
+        const numberOfImages = 60;
         imagesRef.current = Array(numberOfImages)
           .fill()
           .map(() => {
             const randomCharacter = getRandomCharacter();
             return new ImageObject(
-              Math.random() * canvas.width,
-              Math.random() * canvas.height,
-              60,
+              canvas.width / 2,
+              canvas.height / 2,
+              120,
               randomCharacter
             );
           });

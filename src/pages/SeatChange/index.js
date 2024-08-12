@@ -110,7 +110,7 @@ function SeatChange() {
 
   const handleShufflePairs = () => {
     startAnimation();
-    setTimeout(shufflePairs, 3000);
+    setTimeout(shufflePairs, 1000);
   };
 
   const renderPairs = () => {

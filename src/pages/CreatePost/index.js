@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { uploadPostImage } from "../../service/apiService"; // 이미지 업로드 함수 import
 
 function CreatePost() {
   const [form, setForm] = useState({
@@ -11,16 +14,22 @@ function CreatePost() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const quillRef = useRef(null);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-
     setForm((prevForm) => ({
       ...prevForm,
       [name]: value,
+    }));
+  };
+
+  const handleContentChange = (content) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      content: content,
     }));
   };
 
@@ -51,6 +60,71 @@ function CreatePost() {
       setIsLoading(false);
     }
   };
+
+  const imageHandler = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.setAttribute("multiple", "true");
+    input.click();
+
+    input.onchange = async () => {
+      const files = Array.from(input.files);
+
+      for (const file of files) {
+        try {
+          setIsLoading(true);
+          const imageData = await uploadPostImage(file);
+          console.log(imageData);
+
+          const quill = quillRef.current.getEditor();
+
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, "image", imageData.location);
+          quill.setSelection(range.index + 1);
+        } catch (error) {
+          console.error("이미지 업로드 실패:", error);
+          setError("이미지 업로드에 실패했습니다.");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+  }, []);
+
+  const modules = {
+    toolbar: {
+      container: [
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [
+          { list: "ordered" },
+          { list: "bullet" },
+          { indent: "-1" },
+          { indent: "+1" },
+        ],
+        ["link", "image"],
+        ["clean"],
+      ],
+      handlers: {
+        image: imageHandler,
+      },
+    },
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+  ];
 
   return (
     <div className="bg-white min-h-screen">
@@ -108,39 +182,36 @@ function CreatePost() {
           </div>
 
           <div className="mb-4">
-            <label
-              className="bloc
-            k mb-2 font-semibold"
-            >
-              게시글 작성
-            </label>
-            <textarea
-              name="content"
-              className="w-full p-2 border rounded h-64 resize-none"
-              placeholder="1500자 이내로 작성해주세요"
+            <label className="block mb-2 font-semibold">게시글 작성</label>
+            <ReactQuill
+              theme="snow"
+              ref={quillRef}
+              modules={modules}
+              formats={formats}
               value={form.content}
-              onChange={handleChange}
-            ></textarea>
-            <div className="text-right text-sm text-gray-500 mt-1">
-              {form.content.length}/1500
-            </div>
+              onChange={handleContentChange}
+              className="h-64 mb-12"
+            />
           </div>
 
           <div className="flex justify-end space-x-4">
             <button
               type="submit"
               className="px-4 py-2 bg-[#397358] text-white rounded hover:bg-green-700"
+              disabled={isLoading}
             >
-              작성하기
+              {isLoading ? "작성 중..." : "작성하기"}
             </button>
             <button
               type="button"
               className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              onClick={() => navigate("/board")}
             >
               취소하기
             </button>
           </div>
         </form>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
     </div>
   );

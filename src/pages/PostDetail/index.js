@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostById, updatePost, deletePost } from "../../service/apiService";
 import AuthStore from "../../stores/AuthStore";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
 const postTypeMap = {
   about: "요즘 우리 학교는",
@@ -75,6 +78,11 @@ function PostDetail() {
     const { name, value } = e.target;
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleContentChange = (content) => {
+    setEditForm((prev) => ({ ...prev, content }));
+  };
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -165,16 +173,19 @@ function PostDetail() {
         <div className="mb-4">
           <label className="block mb-2 font-semibold">게시글 내용</label>
           {isEditing ? (
-            <textarea
-              name="content"
-              className="w-full p-2 border rounded h-64 resize-none"
+            <ReactQuill
+              theme="snow"
               value={editForm.content}
-              onChange={handleChange}
-            ></textarea>
+              onChange={handleContentChange}
+              className="h-64 mb-12"
+            />
           ) : (
-            <div className="w-full p-2 border rounded h-64 overflow-y-auto bg-gray-100">
-              {post.content}
-            </div>
+            <div
+              className="w-full p-2 border rounded  overflow-y-auto bg-gray-100"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(post.content),
+              }}
+            />
           )}
         </div>
 
@@ -221,7 +232,6 @@ function PostDetail() {
             목록으로
           </button>
         </div>
-        <div className="flex justify-end space-x-4 mt-4"></div>
       </div>
     </div>
   );

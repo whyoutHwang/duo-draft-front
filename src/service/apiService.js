@@ -135,6 +135,18 @@ export const createPost = async (postData) => {
   }
 };
 
+export const uploadPostImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await axiosInstance.post("/posts/upload-images", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
 // ID로 특정 게시글 가져오기
 export const getPostById = async (id) => {
   try {

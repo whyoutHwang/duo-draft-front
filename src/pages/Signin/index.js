@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authStore from "../../stores/AuthStore";
 
@@ -19,6 +19,7 @@ import Gray from "../../assets/image/character/Gray.png";
 import Orange from "../../assets/image/character/Orange.png";
 import Pink from "../../assets/image/character/Pink.png";
 import LOGO from "../../assets/image/logo/logo.svg";
+import Modal from "react-modal";
 
 function Signin() {
   const [formData, setFormData] = useState({
@@ -26,6 +27,18 @@ function Signin() {
     password: "",
   });
   const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 생성합니다
+  const [errors, setErrors] = useState({});
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "test") {
+      Modal.setAppElement("#root");
+    }
+  }, []);
 
   // 캐릭터 배열
   const characters = [
@@ -46,7 +59,24 @@ function Signin() {
   ];
 
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+
+    // 입력 중 유효성 검사 (선택적)
+    if (name === "email") {
+      if (!validateEmail(value)) {
+        setErrors({ ...errors, email: "유효한 이메일 주소를 입력해주세요" });
+      } else {
+        setErrors({ ...errors, email: "" });
+      }
+    }
+  };
+
+  const handleBlur = (event) => {
+    const { name, value } = event.target;
+    if (name === "email" && !validateEmail(value)) {
+      setErrors({ ...errors, email: "유효한 이메일 주소를 입력해주세요" });
+    }
   };
 
   const getRandomPosition = () => ({
@@ -108,11 +138,15 @@ function Signin() {
                   name="email"
                   type="email"
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   autoComplete="email"
                   required
                   className="mt-2 appearance-none rounded-md block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#397358] focus:border-[#397358] sm:text-sm"
                   placeholder="이메일 주소"
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>

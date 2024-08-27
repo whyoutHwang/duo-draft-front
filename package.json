@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",
@@ -46,13 +43,17 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.5.2",
     "autoprefixer": "^10.4.19",
     "babel-jest": "^29.7.0",
     "css-loader": "^7.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.38",
     "postcss-loader": "^8.1.1",
     "style-loader": "^3.3.4",

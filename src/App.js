@@ -17,7 +17,7 @@ import CreatePost from "./pages/CreatePost";
 import PostDetail from "./pages/PostDetail";
 
 function App() {
-  console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
+  // console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
 
   return (
     <Router>

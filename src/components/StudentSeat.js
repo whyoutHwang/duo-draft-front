@@ -17,7 +17,8 @@ function StudentSeat({ student, size = "m" }) {
     "--border-radius": `${24 * multiplier}px`,
     "--image-size": `${64 * multiplier}px`,
     "--font-size": `${12 * multiplier}px`,
-    "--drawer-height": `${14 * multiplier}px`,
+    "--drawer-height": `${20 * multiplier}px`,
+    "--drawer2-height": `${10 * multiplier}px`,
     "--drawer-bottom": `${24 * multiplier}px`,
     "--drawer-width": `${10 * multiplier}px`,
   };
@@ -30,8 +31,7 @@ function StudentSeat({ student, size = "m" }) {
       <div
         className="absolute bottom-0 w-full h-full flex flex-row items-center justify-center"
         style={{
-          background:
-            "radial-gradient(ellipse at center, rgb(250, 232, 201) 0%, rgb(235, 193, 136) 100%)",
+          background: "radial-gradient(circle, #FAE6C9 0%, #EBC188 100%)",
           borderRadius: "var(--border-radius)",
         }}
       >
@@ -71,7 +71,7 @@ function StudentSeat({ student, size = "m" }) {
         <div
           className="relative mx-auto"
           style={{
-            width: "60%",
+            width: "50%",
             height: "var(--drawer-height)",
             transform: "translateY(100%)",
           }}
@@ -80,7 +80,7 @@ function StudentSeat({ student, size = "m" }) {
             className="absolute top-0 w-full"
             style={{
               height: "var(--drawer-height)",
-              background: "#8B4513",
+              background: "#AA672A",
               zIndex: "6",
               borderRadius: "0 0 14px 14px",
             }}
@@ -99,10 +99,10 @@ function StudentSeat({ student, size = "m" }) {
           <div
             className="absolute w-full rounded-full"
             style={{
-              height: "var(--drawer-height)",
-              background: "#8B4513",
+              height: "var(--drawer2-height)",
+              background: "#AA672A",
               zIndex: "6",
-              bottom: `calc(var(--drawer-height) * -1.4)`,
+              bottom: `calc(var(--drawer2-height) * -1.8)`,
             }}
           ></div>
         </div>

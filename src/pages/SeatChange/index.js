@@ -386,7 +386,7 @@ function Section({ pairs, title, className = "", size = "m" }) {
         }
       >
         {pairs.map((pair, index) => (
-          <div key={index} className="flex mb-8 justify-center">
+          <div key={index} className="flex mb-16 justify-center">
             <StudentSeat student={pair.student1} size={size} />
             {pair.student2 && (
               <StudentSeat student={pair.student2} size={size} />

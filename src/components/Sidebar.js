@@ -4,6 +4,7 @@ import Select from "react-select";
 import EditIcon from "../assets/image/icons/icon-edit.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { characterImages } from "../constants/characterImages";
 
 const Sidebar = ({
   formData,
@@ -36,7 +37,9 @@ const Sidebar = ({
     }
   }, [isOpen]);
 
-  const [imagePreview, setImagePreview] = useState(formData.imageUrl || "");
+  const [imagePreview, setImagePreview] = useState(
+    formData.imageUrl || characterImages.Yellow
+  );
 
   const handleSidebarClick = (e) => {
     e.stopPropagation(); // 이벤트 전파 중단

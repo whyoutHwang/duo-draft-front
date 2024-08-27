@@ -24,18 +24,36 @@ function Main() {
   const NavItem = ({ path, icon, iconActive, label, currentPath }) => (
     <>
       <a
-        className={`h-16 flex items-center p-2 rounded-r-full ${
+        className={`h-16 flex items-center p-2 rounded-r-full transition-colors duration-200
+        ${
           currentPath === path
             ? "bg-[#397358] text-white"
             : "hover:bg-[#397358] hover:text-white"
         }`}
         href={path}
       >
-        <img
-          className="w-5 h-5 ml-4"
-          src={currentPath === path ? iconActive : icon}
-          alt={`${label} icon`}
-        />
+        <div className="relative w-5 h-5 ml-4">
+          <img
+            className={`absolute inset-0 transition-opacity duration-200
+            ${
+              currentPath === path
+                ? "opacity-0"
+                : "opacity-100 group-hover:opacity-0"
+            }`}
+            src={icon}
+            alt={`${label} icon`}
+          />
+          <img
+            className={`absolute inset-0 transition-opacity duration-200
+            ${
+              currentPath === path
+                ? "opacity-100"
+                : "opacity-0 group-hover:opacity-100"
+            }`}
+            src={iconActive}
+            alt={`${label} active icon`}
+          />
+        </div>
         <span className="ml-3">{label}</span>
       </a>
     </>

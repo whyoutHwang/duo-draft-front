@@ -145,7 +145,10 @@ function SeatChange() {
   const renderTwoColumns = () => {
     const midpoint = Math.ceil(pairs.length / 2);
     return (
-      <div className="flex justify-around" style={{ gap: "4rem" }}>
+      <div
+        className="flex justify-around overflow-auto"
+        style={{ gap: "4rem", maxHeight: "80vh" }}
+      >
         <Section pairs={pairs.slice(0, midpoint)} title="1분단" />
         <Section pairs={pairs.slice(midpoint)} title="2분단" />
       </div>
@@ -155,13 +158,17 @@ function SeatChange() {
   const renderThreeColumns = () => {
     const columnSize = Math.ceil(pairs.length / 3);
     return (
-      <div className="flex justify-between " style={{ gap: "4rem" }}>
-        <Section pairs={pairs.slice(0, columnSize)} title="1분단" />
+      <div
+        className="flex justify-between overflow-auto"
+        style={{ gap: "4rem", maxHeight: "80vh" }}
+      >
+        <Section pairs={pairs.slice(0, columnSize)} title="1분단" size="s" />
         <Section
           pairs={pairs.slice(columnSize, columnSize * 2)}
           title="2분단"
+          size="s"
         />
-        <Section pairs={pairs.slice(columnSize * 2)} title="3분단" />
+        <Section pairs={pairs.slice(columnSize * 2)} title="3분단" size="s" />
       </div>
     );
   };
@@ -212,10 +219,13 @@ function SeatChange() {
     }
 
     return (
-      <div className="flex justify-between">
-        <Section pairs={leftColumn} title="1분단" size="s" />
-        <Section pairs={centerColumn} title="2분단" size="s" />
-        <Section pairs={rightColumn} title="3분단" size="s" />
+      <div
+        className="flex justify-around overflow-auto"
+        style={{ gap: "4rem", maxHeight: "80vh" }}
+      >
+        <Section pairs={leftColumn} title="1분단" size="m" />
+        <Section pairs={centerColumn} title="2분단" size="m" />
+        <Section pairs={rightColumn} title="3분단" size="m" />
       </div>
     );
   };
@@ -246,7 +256,7 @@ function SeatChange() {
 
     const leftColumn = [];
     const rightColumn = [];
-    const bottomRows = [[], []];
+    const bottomRows = [];
 
     let studentIndex = 0;
 
@@ -267,8 +277,7 @@ function SeatChange() {
 
     // 하단 두 줄 채우기
     for (let i = 0; i < bottomCount; i++) {
-      const rowIndex = i < bottomRowCount ? 0 : 1;
-      bottomRows[rowIndex].push({
+      bottomRows.push({
         student1: getStudentAt(studentIndex),
         student2: null,
       });
@@ -289,15 +298,9 @@ function SeatChange() {
         <div className="w-full">
           <Section
             size="s"
-            pairs={bottomRows[0]}
+            pairs={bottomRows}
             title="하단 (상단 줄)"
             className="w-full mb-4"
-          />
-          <Section
-            size="s"
-            pairs={bottomRows[1]}
-            title="하단 (하단 줄)"
-            className="w-full"
           />
         </div>
       </div>
@@ -375,18 +378,15 @@ function SeatChange() {
 }
 
 function Section({ pairs, title, className = "", size = "m" }) {
-  console.log(size);
-
   return (
     <div className={`${className}`}>
-      <h2 className="text-center font-bold mb-4">{title}</h2>
       <div
         className={
           title.includes("하단") ? "flex flex-wrap justify-center" : ""
         }
       >
         {pairs.map((pair, index) => (
-          <div key={index} className="flex mb-4 justify-center">
+          <div key={index} className="flex mb-8 justify-center">
             <StudentSeat student={pair.student1} size={size} />
             {pair.student2 && (
               <StudentSeat student={pair.student2} size={size} />

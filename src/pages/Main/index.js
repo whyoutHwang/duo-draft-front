@@ -98,7 +98,7 @@ function Main() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <div className="w-64 bg-[#F2EFE8] shadow-md hidden sm:flex sm:flex-col justify-between">
+      <div className="w-64 min-w-64 bg-[#F2EFE8] shadow-md hidden sm:flex sm:flex-col justify-between">
         <div className="flex flex-col items-center mt-8">
           <div className="w-full flex items-center justify-start mb-4 ml-8 ">
             <img src={LOGO} alt={"logo"} className="w-8 h-8 object-contain" />

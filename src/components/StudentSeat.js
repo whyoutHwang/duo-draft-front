@@ -17,7 +17,7 @@ function StudentSeat({ student, size = "m" }) {
     "--border-radius": `${24 * multiplier}px`,
     "--image-size": `${64 * multiplier}px`,
     "--font-size": `${12 * multiplier}px`,
-    "--drawer-height": `${20 * multiplier}px`,
+    "--drawer-height": `${14 * multiplier}px`,
     "--drawer-bottom": `${24 * multiplier}px`,
     "--drawer-width": `${10 * multiplier}px`,
   };
@@ -102,7 +102,7 @@ function StudentSeat({ student, size = "m" }) {
               height: "var(--drawer-height)",
               background: "#8B4513",
               zIndex: "6",
-              bottom: `calc(var(--drawer-height) * -1)`,
+              bottom: `calc(var(--drawer-height) * -1.4)`,
             }}
           ></div>
         </div>

@@ -5,6 +5,8 @@ const StudentCard = ({ student, onClick }) => {
   const getImageSrc = () => {
     if (student.imageUrl) {
       return student.imageUrl; // 사용자 지정 이미지가 있으면 사용
+    } else if (student.defaultImage) {
+      return characterImages[student.defaultImage];
     }
     return characterImages.Yellow; // 이미지가 없는 경우
   };

@@ -202,7 +202,7 @@ function StudentManagement() {
   }
 
   return (
-    <div className="flex-col h-screen justify-center items-center bg-white p-16">
+    <div className="flex-col h-screen justify-center items-center bg-white p-8">
       <Sidebar
         formData={formData}
         students={students}

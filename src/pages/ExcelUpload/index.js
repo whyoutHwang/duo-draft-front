@@ -118,7 +118,7 @@ function ExcelUpload() {
   return (
     <>
       {!excelData ? (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center h-full p-8">
           <h2 className="text-2xl font-bold mb-24">
             파일 업로드해 학생을 등록해주세요.
           </h2>

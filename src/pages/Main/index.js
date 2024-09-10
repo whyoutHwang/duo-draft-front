@@ -97,7 +97,7 @@ function Main() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       <div className="w-64 min-w-64 bg-[#F2EFE8] shadow-md hidden sm:flex sm:flex-col justify-between">
         <div className="flex flex-col items-center mt-8">
           <div className="w-full flex items-center justify-start mb-4 ml-8 ">
@@ -124,11 +124,11 @@ function Main() {
           <UserInfo handleClick={handleClick} />
         </div>
       </div>
-      <div className="flex-1 flex flex-col bg-[#F2EFE8]">
-        <div
-          className="flex-1 overflow-auto  bg-white"
-          style={{ borderTopLeftRadius: "5rem" }}
-        >
+      <div
+        className="flex-1 flex flex-col max-w-7xl mx-auto bg-white"
+        style={{ borderTopLeftRadius: "5rem" }}
+      >
+        <div className="flex-1 overflow-auto   ">
           <Outlet />
         </div>
       </div>

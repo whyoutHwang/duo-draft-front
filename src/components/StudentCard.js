@@ -15,7 +15,7 @@ const StudentCard = ({ student, onClick }) => {
 
   return (
     <div
-      className="bg-[#FDFAF5] w-32 max-w-md rounded-lg shadow-md p-4 m-2 cursor-pointer hover:shadow-lg"
+      className="bg-[#FDFAF5] w-32 max-w-md rounded-lg shadow-md p-4 cursor-pointer hover:shadow-lg"
       onClick={() => onClick(student)}
     >
       <div className="w-16 h-16 border border-whtie-300 rounded-full mx-auto overflow-hidden">

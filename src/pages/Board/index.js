@@ -76,8 +76,8 @@ function Board() {
       : posts.filter((post) => postTypeMap[post.postType] === activeTab);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md">
+    <div className="bg-white min-h-screen p-8">
+      <div className="min-w-5xl ">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">자유 게시판</h1>
@@ -90,27 +90,27 @@ function Board() {
           </div>
 
           <div className="flex justify-center mb-6">
-            {tabs.map((tab, index) => (
-              <button
-                key={tab}
-                className={`
-               py-2 px-6 
-               ${index === 0 ? "rounded-l-full" : ""} 
-               ${index === tabs.length - 1 ? "rounded-r-full" : ""}
-               ${
-                 activeTab === tab
-                   ? "bg-[#397358] text-white"
-                   : "bg-gray-200 text-gray-700"
-               }
-               ${index !== tabs.length - 1 ? "border-r border-white" : ""}
-               focus:outline-none
-               transition-colors duration-200
-             `}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
+            <div className="inline-flex border border-solid border-black rounded-full overflow-hidden">
+              {tabs.map((tab, index) => (
+                <button
+                  key={tab}
+                  className={`
+                 py-2 px-6 
+                 ${
+                   activeTab === tab
+                     ? "bg-[#397358] text-white"
+                     : "bg-gray-200 text-gray-700"
+                 }
+                 
+                 focus:outline-none
+                 transition-colors duration-200
+               `}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-row justify-between items-center mb-4">
@@ -138,7 +138,7 @@ function Board() {
               {filteredPosts.map((post) => (
                 <tr
                   key={post.id}
-                  className="border-b"
+                  className="border-b cursor-pointer"
                   onClick={() => handlePostClick(post._id)}
                 >
                   <td className="text-center py-3">

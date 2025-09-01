@@ -1,70 +1,160 @@
-# Getting Started with Create React App
+# Duo Draft
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+학급 관리를 위한 현대적이고 직관적인 웹 애플리케이션으로, 자리 배치부터 게시판 관리까지 교육 현장에서 필요한 모든 기능을 제공합니다.
 
-## Available Scripts
+## 🎯 프로젝트 개요
 
-In the project directory, you can run:
+**Duo Draft**는 교사들이 보다 효율적으로 학급을 관리할 수 있도록 도와주는 종합 학급 관리 시스템입니다.
+특히 학생들의 자리 배치와 페어링을 지능적으로 관리하고, 학급 내 소통을 원활하게 하는 게시판 기능을 제공합니다.
 
-### `npm start`
+## ✨ 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🪑 지능형 자리 배치 시스템
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **자동 자리 배치**: 학생들의 이전 배치 히스토리를 고려한 최적의 자리 배치
+- **애니메이션 효과**: 시각적으로 매력적인 자리 이동 애니메이션
+- **다양한 좌석 타입**: A형, B형 등 다양한 교실 레이아웃 지원
+- **수동 편집 모드**: 필요시 교사가 직접 자리를 조정할 수 있는 기능
 
-### `npm test`
+### 👥 학생 관리
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **엑셀 업로드**: 학생 명단을 엑셀 파일로 간편하게 일괄 등록
+- **학생 정보 관리**: 개별 학생 정보 추가, 수정, 삭제
+- **자리 히스토리**: 각 학생의 이전 자리 배치 이력 추적
 
-### `npm run build`
+### 📋 게시판 시스템
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **리치 텍스트 에디터**: Quill 에디터를 활용한 풍부한 텍스트 편집 기능
+- **게시물 관리**: 게시물 작성, 수정, 삭제 및 목록 조회
+- **반응형 디자인**: 다양한 디바이스에서 최적화된 사용자 경험
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ 기술 스택
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Frontend
 
-### `npm run eject`
+- **React 18**: 최신 React 훅과 함수형 컴포넌트 활용
+- **MobX**: 효율적인 상태 관리를 위한 반응형 상태 라이브러리
+- **React Router**: SPA 라우팅 관리
+- **Tailwind CSS**: 유틸리티 우선 CSS 프레임워크로 빠른 스타일링
+- **Quill Editor**: 리치 텍스트 편집을 위한 강력한 에디터
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 주요 라이브러리
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Axios**: HTTP 클라이언트 라이브러리
+- **React Icons**: 다양한 아이콘 세트
+- **React Modal**: 모달 컴포넌트
+- **React Toastify**: 사용자 알림 시스템
+- **XLSX**: 엑셀 파일 처리
+- **DOMPurify**: XSS 보안을 위한 HTML 정화
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 개발 도구
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Create React App**: 빠른 React 프로젝트 설정
+- **Jest & Testing Library**: 컴포넌트 테스팅
+- **ESLint**: 코드 품질 관리
 
-## Learn More
+## 🚀 설치 및 실행
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 필수 조건
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Node.js 16.0.0 이상
+- npm 또는 yarn
 
-### Code Splitting
+### 설치
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+# 저장소 클론
+git clone https://github.com/your-username/duo-draft-front.git
+cd duo-draft-front
 
-### Analyzing the Bundle Size
+# 의존성 설치
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 실행
 
-### Making a Progressive Web App
+```bash
+# 개발 서버 실행
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# 프로덕션 빌드
+npm run build
 
-### Advanced Configuration
+# 테스트 실행
+npm test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📱 주요 화면
 
-### Deployment
+### 메인 대시보드
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- 직관적인 내비게이션과 현재 학급 정보 표시
+- 빠른 접근을 위한 주요 기능 바로가기
 
-### `npm run build` fails to minify
+### 자리 배치 화면
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- 실시간 자리 배치 상황 시각화
+- 드래그 앤 드롭으로 간편한 자리 이동
+- 애니메이션 효과로 시각적 피드백 제공
+
+### 학생 관리 화면
+
+- 학생 목록 조회 및 검색
+- 개별 학생 정보 상세 보기 및 편집
+- 엑셀 파일을 통한 일괄 등록
+
+### 게시판
+
+- 리치 텍스트 에디터로 다양한 형태의 게시물 작성
+- 카테고리별 게시물 분류
+- 반응형 디자인으로 모바일에서도 편리한 사용
+
+## 🔧 프로젝트 구조
+
+```
+src/
+├── components/          # 재사용 가능한 UI 컴포넌트
+├── pages/               # 페이지 컴포넌트
+│   ├── Main/           # 메인 대시보드
+│   ├── SeatChange/     # 자리 배치 관리
+│   ├── StudentManagement/ # 학생 관리
+│   ├── Board/          # 게시판
+│   └── ...
+├── stores/             # MobX 상태 관리
+├── service/            # API 서비스
+├── hooks/              # 커스텀 훅
+├── constants/          # 상수 정의
+└── assets/             # 정적 자원 (이미지, 아이콘 등)
+```
+
+## 🎨 디자인 시스템
+
+- **색상 팔레트**: 교육 환경에 적합한 차분하고 전문적인 색상 구성
+- **타이포그래피**: 가독성을 최우선으로 한 폰트 선택
+- **반응형 디자인**: 데스크톱, 태블릿, 모바일 모든 환경에서 최적화
+- **사용자 경험**: 직관적이고 일관된 인터페이스 디자인
+
+## 📈 성능 최적화
+
+- **코드 분할**: React.lazy를 활용한 페이지별 코드 분할
+- **이미지 최적화**: 적절한 이미지 포맷과 크기 사용
+- **캐싱 전략**: 적절한 브라우저 캐싱으로 로딩 속도 개선
+- **번들 최적화**: Webpack을 통한 번들 크기 최적화
+
+## 🔐 보안
+
+- **XSS 방지**: DOMPurify를 통한 사용자 입력 정화
+- **HTTPS 통신**: 모든 API 통신에 HTTPS 적용
+- **인증 시스템**: 안전한 사용자 인증 및 권한 관리
+
+## 📝 라이센스
+
+이 프로젝트는 교육 목적으로 개발되었습니다.
+
+## 👥 기여
+
+버그 리포트, 기능 요청, 풀 리퀘스트를 환영합니다!
+
+---
+
+**Duo Draft**를 통해 더 스마트하고 효율적인 학급 관리를 경험해보세요! 🎓✨
